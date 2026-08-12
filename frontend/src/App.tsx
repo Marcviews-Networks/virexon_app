@@ -4,15 +4,12 @@ import Footer from "./components/Footer"
 
 export default function App() {
   return (
-    <>
-      <Navbar />
-
+    <div className="min-h-screen bg-white">
+      {/* Optional: Your public Header / Navbar here */}
       <main>
         <Outlet />
       </main>
-      
-      <Footer />
-    </>
-  )
-    
+      {/* Optional: Your public Footer here */}
+    </div>
+  );
 }
