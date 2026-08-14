@@ -15,6 +15,14 @@ export interface AuthResponse {
 
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    register: builder.mutation<AuthResponse,{ name: string; email: string; password: string }>({
+      query: (userData) => ({
+        url: "/auth/register",
+        method: "POST",
+        body: userData,
+      }),
+      invalidatesTags: ["User"],
+    }),
     login: builder.mutation<AuthResponse, { email: string; password: string }>({
       query: (credentials) => ({
         url: "/auth/login",
@@ -37,4 +45,4 @@ export const authApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useLoginMutation, useLogoutMutation, useGetMeQuery } = authApi;
+export const {useRegisterMutation, useLoginMutation, useLogoutMutation, useGetMeQuery } = authApi;

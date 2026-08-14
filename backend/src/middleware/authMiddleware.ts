@@ -35,3 +35,17 @@ export const adminOnly = (req: AuthRequest, res: Response, next: NextFunction) =
     res.status(403).json({ success: false, message: "Forbidden: Admin access required" });
   }
 };
+
+// Generic role-based authorization middleware
+export const authorize = (...roles: ("client" | "admin")[]) => {
+  return (req: AuthRequest, res: Response, next: NextFunction): void => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      res.status(403).json({
+        success: false,
+        message: `Forbidden: Access restricted to roles [${roles.join(", ")}]`,
+      });
+      return;
+    }
+    next();
+  };
+};
