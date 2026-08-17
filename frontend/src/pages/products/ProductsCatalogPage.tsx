@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useGetProductsQuery } from "@/store/api/productApi";
 
+
 export const ProductsCatalogPage = () => {
   const { data, isLoading, isError } = useGetProductsQuery();
   const [searchTerm, setSearchTerm] = useState("");
@@ -45,11 +46,10 @@ export const ProductsCatalogPage = () => {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
-                selectedCategory === cat
-                  ? "bg-indigo-600 text-white"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-              }`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${selectedCategory === cat
+                ? "bg-indigo-600 text-white"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
             >
               {cat}
             </button>
@@ -73,52 +73,53 @@ export const ProductsCatalogPage = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredProducts.map((product) => (
-  <div
-    key={product._id}
-    className="group bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between"
-  >
-    <div>
-      <div className="aspect-square bg-slate-100 overflow-hidden relative">
-        {/* Check if images array exists and has at least one image */}
-        {product.images && product.images.length > 0 ? (
-          <img
-            src={product.images[0]}
-            alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-xs text-slate-400">
-            No Image
-          </div>
-        )}
-        <span className="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md">
-          {product.category}
-        </span>
-      </div>
+            <div
+              key={product._id}
+              className="group bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between"
+            >
+              <div>
+                <div className="aspect-square bg-slate-100 overflow-hidden relative">
+                  {/* Check if images array exists and has at least one image */}
+                  {(product.images?.length ?? 0) > 0 ||
+                    (product.variants?.[0]?.images?.length ?? 0) > 0 ? (
+                    <img
+                      src={product.images?.[0] || product.variants?.[0]?.images?.[0]}
+                      alt={product.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-xs text-slate-400">
+                      No Image
+                    </div>
+                  )}
+                  <span className="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md">
+                    {product.category}
+                  </span>
+                </div>
 
-      <div className="p-4">
-        <h3 className="font-bold text-slate-900 text-base group-hover:text-indigo-600 transition-colors line-clamp-1">
-          {product.name}
-        </h3>
-        <p className="mt-1 text-xs text-slate-500 line-clamp-2">
-          {product.description}
-        </p>
-      </div>
-    </div>
+                <div className="p-4">
+                  <h3 className="font-bold text-slate-900 text-base group-hover:text-indigo-600 transition-colors line-clamp-1">
+                    {product.name}
+                  </h3>
+                  <p className="mt-1 text-xs text-slate-500 line-clamp-2">
+                    {product.description}
+                  </p>
+                </div>
+              </div>
 
-    <div className="p-4 pt-0 flex items-center justify-between border-t border-slate-100 mt-4">
-      <span className="text-lg font-bold text-slate-900">
-        ${product.price.toFixed(2)}
-      </span>
-      <Link
-        to={`/products/${product._id}`}
-        className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold transition-colors"
-      >
-        View Details
-      </Link>
-    </div>
-  </div>
-))}
+              <div className="p-4 pt-0 flex items-center justify-between border-t border-slate-100 mt-4">
+                <span className="text-lg font-bold text-slate-900">
+                  ${product.price.toFixed(2)}
+                </span>
+                <Link
+                  to={`/products/${product._id}`}
+                  className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold transition-colors"
+                >
+                  View Details
+                </Link>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>

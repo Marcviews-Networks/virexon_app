@@ -1,20 +1,7 @@
 import { apiSlice } from "./apiSlice";
+import type { Product } from "@/types";
 
-export interface Product {
-  _id: string;
-  name: string;
-  slug: string;
-  brand: string;
-  category: "DSLR" | "Mirrorless" | "Lenses" | "Action Cam" | "Accessories";
-  price: number;
-  stock: number;
-  description: string;
-  specs?: Record<string, string>;
-  images?: string[];
-  isFeatured?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-}
+
 
 export interface ProductResponse {
   success: boolean;
