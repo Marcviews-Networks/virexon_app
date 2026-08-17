@@ -16,6 +16,7 @@ import { LoginPage } from "@/pages/auth/LoginPage";
 import { RegisterPage } from "@/pages/auth/RegisterPage";
 import { ProductsCatalogPage } from "@/pages/products/ProductsCatalogPage";
 import { ProductDetailsPage } from "@/pages/products/ProductDetailsPage";
+import { AddressesPage } from "@/pages/client/AddressesPage";
 
 export const router = createBrowserRouter([
   {
@@ -39,7 +40,10 @@ export const router = createBrowserRouter([
       {
         path: "dashboard",
         element: <ClientLayout />,
-        children: [{ index: true, element: <ClientDashboardPage /> }],
+        children: [
+          { index: true, element: <ClientDashboardPage /> },
+          { path: "addresses", element: <AddressesPage /> },
+        ],
       },
     ],
   },

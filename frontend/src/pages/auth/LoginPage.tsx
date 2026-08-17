@@ -31,7 +31,7 @@ export const LoginPage = () => {
       <div className="w-full max-w-md rounded-xl bg-slate-800 p-8 shadow-2xl border border-slate-700">
         <div className="text-center">
           <h2 className="text-2xl font-bold tracking-tight text-white">
-            VIREXON ADMIN
+            VIREXON LOGIN
           </h2>
           <p className="mt-2 text-sm text-slate-400">
             Sign in to access the management dashboard

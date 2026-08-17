@@ -1,19 +1,22 @@
 import { apiSlice } from "./apiSlice";
 
+// Shared / Frontend Type (No Mongoose methods)
 export interface Product {
   _id: string;
+  id?: string;
   name: string;
   slug: string;
   brand: string;
-  category: "DSLR" | "Mirrorless" | "Lenses" | "Action Cam" | "Accessories";
+  category: "Main Products" | "Diwali" | "Phone Stands";
   price: number;
   stock: number;
   description: string;
-  specs?: Record<string, string>;
-  images?: string[];
-  isFeatured?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+  specs: Record<string, string>;
+  images: string[];
+  variants?: string[];
+  isFeatured: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ProductResponse {
