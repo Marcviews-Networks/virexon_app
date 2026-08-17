@@ -101,3 +101,125 @@ export const getMe = async (req: AuthRequest, res: Response) => {
 
   res.status(200).json({ success: true, data: user });
 };
+
+// ----------------------------------------------------
+// 1. ADD NEW ADDRESS
+// ----------------------------------------------------
+export const addAddress = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    const { street, city, state, zipCode, country, isDefault } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).json({ success: false, message: "User not found" });
+      return;
+    }
+
+    // Unset previous defaults if this new address is default
+    if (isDefault) {
+      user.addresses.forEach((addr) => {
+        addr.isDefault = false;
+      });
+    }
+
+    const isFirstAddress = user.addresses.length === 0;
+
+    user.addresses.push({
+      street,
+      city,
+      state,
+      zipCode,
+      country,
+      isDefault: isDefault || isFirstAddress,
+    });
+
+    await user.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Address added successfully",
+      data: user.addresses,
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// ----------------------------------------------------
+// 2. UPDATE AN EXISTING ADDRESS
+// ----------------------------------------------------
+export const updateAddress = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    const { addressId } = req.params;
+    const { street, city, state, zipCode, country, isDefault } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).json({ success: false, message: "User not found" });
+      return;
+    }
+
+    // Search for address subdocument in array
+    const address = user.addresses.find((addr) => addr._id?.toString() === addressId);
+    if (!address) {
+      res.status(404).json({ success: false, message: "Address not found" });
+      return;
+    }
+
+    if (isDefault) {
+      user.addresses.forEach((addr) => {
+        addr.isDefault = false;
+      });
+      address.isDefault = true;
+    }
+
+    if (street) address.street = street;
+    if (city) address.city = city;
+    if (state) address.state = state;
+    if (zipCode) address.zipCode = zipCode;
+    if (country) address.country = country;
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Address updated successfully",
+      data: user.addresses,
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// ----------------------------------------------------
+// 3. DELETE AN ADDRESS
+// ----------------------------------------------------
+export const deleteAddress = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    const { addressId } = req.params;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).json({ success: false, message: "User not found" });
+      return;
+    }
+
+    // Filter out the deleted address using standard JS
+    user.addresses = user.addresses.filter(
+      (addr) => addr._id?.toString() !== addressId
+    );
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Address deleted successfully",
+      data: user.addresses,
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

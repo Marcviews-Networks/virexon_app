@@ -10,7 +10,7 @@ export const ClientLayout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = async () => {
-    await logout();
+    await logout().unwrap();
     navigate("/login");
   };
 
@@ -31,7 +31,7 @@ export const ClientLayout = () => {
 
           <div className="hidden md:flex items-center gap-6">
             <span className="text-sm font-medium text-slate-600">
-              Welcome, {data?.data?.name}
+              Welcome, {data?.data?.name ?? "User"}
             </span>
             <button
               onClick={handleLogout}
@@ -43,7 +43,7 @@ export const ClientLayout = () => {
 
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-slate-600 rounded-lg hover:bg-slate-100"
+            className="md:hidden p-2 text-slate-600 rounded-lg hover:bg-slate-100 cursor-pointer"
           >
             ☰
           </button>
@@ -67,7 +67,7 @@ export const ClientLayout = () => {
             ))}
             <button
               onClick={handleLogout}
-              className="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-50"
+              className="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 cursor-pointer"
             >
               Sign out
             </button>
