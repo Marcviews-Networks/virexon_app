@@ -1,17 +1,22 @@
 import { Schema, model, Document } from "mongoose";
 
+interface IVariant {
+  name: string;
+  images: string[];
+}
+
 export interface IProduct extends Document {
   name: string;
   slug: string;
   brand: string;
-  category: "Main Products" | "Diwali" | "Phone Stands" ;
+  category: "Main Products" | "Diwali" | "Phone Stands" | "Tripods";
   subCategory?: string;
   price: number;
   stock: number;
   description: string;
   specs: Record<string, string>; // e.g., { sensor: "Full-Frame", resolution: "45MP" }
   images: string[];
-  variants?: string[];
+  variants?: IVariant[];
   isFeatured: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -25,15 +30,20 @@ const productSchema = new Schema<IProduct>(
     category: {
       type: String,
       required: true,
-      enum: ["Main Products", "Diwali", "Phone Stands"],
+      enum: ["Main Products", "Diwali", "Phone Stands", "Tripods"],
     },
-    subCategory: { type: String, trim: true},
+    subCategory: { type: String, trim: true },
     price: { type: Number, required: true, min: 0 },
     stock: { type: Number, required: true, default: 0, min: 0 },
     description: { type: String, required: true },
     specs: { type: Map, of: String },
     images: [{ type: String }],
-    variants: [{ type: String, trim: true}],
+    variants: [
+      {
+        name: { type: String, required: true, trim: true },
+        images: [{ type: String, trim: true }],
+      },
+    ],
     isFeatured: { type: Boolean, default: false },
   },
   { timestamps: true }

@@ -1,23 +1,7 @@
 import { apiSlice } from "./apiSlice";
+import type { Product } from "@/types";
 
-// Shared / Frontend Type (No Mongoose methods)
-export interface Product {
-  _id: string;
-  id?: string;
-  name: string;
-  slug: string;
-  brand: string;
-  category: "Main Products" | "Diwali" | "Phone Stands";
-  price: number;
-  stock: number;
-  description: string;
-  specs: Record<string, string>;
-  images: string[];
-  variants?: string[];
-  isFeatured: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+
 
 export interface ProductResponse {
   success: boolean;
