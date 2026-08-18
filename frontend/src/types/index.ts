@@ -16,7 +16,7 @@ export interface Product {
   name: string;
   slug: string;
   brand: string;
-  category: "Main Products" | "Diwali" | "Phone Stands";
+  category: "Main Products" | "Diwali" | "Phone Stands" | "Tripods";
   subCategory?: string;
   price: number;
   stock: number;

@@ -9,7 +9,7 @@ export interface IProduct extends Document {
   name: string;
   slug: string;
   brand: string;
-  category: "Main Products" | "Diwali" | "Phone Stands";
+  category: "Main Products" | "Diwali" | "Phone Stands" | "Tripods";
   subCategory?: string;
   price: number;
   stock: number;
@@ -30,7 +30,7 @@ const productSchema = new Schema<IProduct>(
     category: {
       type: String,
       required: true,
-      enum: ["Main Products", "Diwali", "Phone Stands"],
+      enum: ["Main Products", "Diwali", "Phone Stands", "Tripods"],
     },
     subCategory: { type: String, trim: true },
     price: { type: Number, required: true, min: 0 },
