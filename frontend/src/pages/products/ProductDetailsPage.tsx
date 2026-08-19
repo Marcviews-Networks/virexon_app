@@ -1,11 +1,14 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useGetProductByIdQuery } from "@/store/api/productApi";
 import { useState } from "react";
-
+import { addToCart } from "@/store/cartSlice";
+import { useAppDispatch } from "@/store/hooks";
 
 export const ProductDetailsPage = () => {
+  const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState(0);
+  const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
   const { data, isLoading, isError } = useGetProductByIdQuery(id || "");
 
@@ -124,8 +127,8 @@ export const ProductDetailsPage = () => {
                         setSelectedImage(0);
                       }}
                       className={`px-4 py-2 rounded-lg border-2 font-medium transition ${selectedVariant === index
-                          ? "border-indigo-600 bg-indigo-50 text-indigo-700"
-                          : "border-slate-300 text-slate-700 hover:border-indigo-400"
+                        ? "border-indigo-600 bg-indigo-50 text-indigo-700"
+                        : "border-slate-300 text-slate-700 hover:border-indigo-400"
                         }`}
                     >
                       {variant.name}
@@ -163,7 +166,12 @@ export const ProductDetailsPage = () => {
           <div className="pt-8">
             <button
               disabled={product.stock <= 0}
-              className="w-full py-3 px-6 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-colors disabled:opacity-50 cursor-pointer"
+              onClick={() => {
+                
+                dispatch(addToCart(product));
+                navigate("/cart")
+              }}
+              className="w-full py-3 px-6 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl"
             >
               {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
             </button>
