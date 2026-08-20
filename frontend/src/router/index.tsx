@@ -18,6 +18,7 @@ import { ProductsCatalogPage } from "@/pages/products/ProductsCatalogPage";
 import { ProductDetailsPage } from "@/pages/products/ProductDetailsPage";
 import { AddressesPage } from "@/pages/client/AddressesPage";
 import { CartPage } from "@/pages/cart/CartPage";
+import { CheckoutPage } from "@/pages/checkout/CheckoutPage";
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +33,7 @@ export const router = createBrowserRouter([
       { path: "products", element: <ProductsCatalogPage /> },
       { path: "products/:id", element: <ProductDetailsPage /> },
       { path: "cart", element: <CartPage /> },
+      { path: "checkout", element: <CheckoutPage /> },
     ],
   },
   

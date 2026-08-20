@@ -11,6 +11,7 @@ import adminRoutes from "./routes/adminRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
+import orderRoutes from "./routes/orderRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT ?? 5000;
@@ -29,6 +30,7 @@ app.use("/api/health", healthRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/orders", orderRoutes);
 
 // Global error handler (must be last)
 app.use(errorHandler);
