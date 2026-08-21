@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import App from "@/App";
 import HomePage from "@/pages/HomePage";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -17,6 +17,8 @@ import { RegisterPage } from "@/pages/auth/RegisterPage";
 import { ProductsCatalogPage } from "@/pages/products/ProductsCatalogPage";
 import { ProductDetailsPage } from "@/pages/products/ProductDetailsPage";
 import { AddressesPage } from "@/pages/client/AddressesPage";
+import { CartPage } from "@/pages/cart/CartPage";
+import { CheckoutPage } from "@/pages/checkout/CheckoutPage";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +32,8 @@ export const router = createBrowserRouter([
       // PUBLIC PRODUCT CATALOG (Visible to Everyone)
       { path: "products", element: <ProductsCatalogPage /> },
       { path: "products/:id", element: <ProductDetailsPage /> },
+      { path: "cart", element: <CartPage /> },
+      { path: "checkout", element: <CheckoutPage /> },
     ],
   },
   
