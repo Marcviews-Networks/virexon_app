@@ -102,6 +102,28 @@ export const getMe = async (req: AuthRequest, res: Response) => {
   res.status(200).json({ success: true, data: user });
 };
 
+
+export const getAddresses = async (req: AuthRequest, res: Response) => {
+  try {
+    const user = await User.findById(req.user?.id);
+
+    if (!user) {
+      res.status(404).json({
+        message: "User not found",
+      });
+      return;
+    }
+
+    res.status(200).json(user.addresses || []);
+  } catch (error) {
+    console.error("Error fetching addresses:", error);
+
+    res.status(500).json({
+      message: "Failed to fetch addresses",
+    });
+  }
+};
+
 // ----------------------------------------------------
 // 1. ADD NEW ADDRESS
 // ----------------------------------------------------
