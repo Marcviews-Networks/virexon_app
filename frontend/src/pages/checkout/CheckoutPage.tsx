@@ -51,6 +51,7 @@ export const CheckoutPage = () => {
                 items: cartItems.map((item) => ({
                     product: item.product._id,
                     name: item.product.name,
+                    image: item.product.images?.[0] || "",
                     price: item.product.price,
                     quantity: item.quantity,
                 })),
@@ -72,9 +73,9 @@ export const CheckoutPage = () => {
 
             dispatch(clearCart());
 
-            alert("Order placed successfully!");
+            
 
-            navigate("/dashboard");
+            navigate(`/dashboard/order-confirmation/${response.order._id}`);
         } catch (error) {
             console.error("Failed to place order:", error);
             alert("Failed to place order. Please try again.");
