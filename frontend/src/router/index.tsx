@@ -19,6 +19,7 @@ import { ProductDetailsPage } from "@/pages/products/ProductDetailsPage";
 import { AddressesPage } from "@/pages/client/AddressesPage";
 import { CartPage } from "@/pages/cart/CartPage";
 import { CheckoutPage } from "@/pages/checkout/CheckoutPage";
+import { OrderConfirmationPage } from "@/pages/orderConfirmation/orderConfirmationPage";
 
 export const router = createBrowserRouter([
   {
@@ -28,15 +29,16 @@ export const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: "login", element: <LoginPage /> },
       { path: "register", element: <RegisterPage /> },
-      
+
       // PUBLIC PRODUCT CATALOG (Visible to Everyone)
       { path: "products", element: <ProductsCatalogPage /> },
       { path: "products/:id", element: <ProductDetailsPage /> },
       { path: "cart", element: <CartPage /> },
       { path: "checkout", element: <CheckoutPage /> },
+
     ],
   },
-  
+
   // CLIENT PROTECTED ROUTES
   {
     element: <ProtectedRoute allowedRoles={["client", "admin"]} />,
@@ -47,11 +49,15 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <ClientDashboardPage /> },
           { path: "addresses", element: <AddressesPage /> },
-        ],
+
+          {
+            path: "order-confirmation/:orderId", element: <OrderConfirmationPage />,
+          },
+        ] 
       },
     ],
   },
-  
+
   // ADMIN ONLY PROTECTED ROUTES
   {
     element: <ProtectedRoute allowedRoles={["admin"]} />,

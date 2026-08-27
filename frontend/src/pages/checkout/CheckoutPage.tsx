@@ -1,12 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { clearCart } from "@/store/cartSlice";
 import { useCreateOrderMutation } from "@/store/api/orderApi";
+import { useGetAddressesQuery } from "../../store/api/apiSlice";
 
 export const CheckoutPage = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+
+    const { data: addresses = [] } =
+        useGetAddressesQuery();
+
+    console.log("Address recieved:", addresses);
 
     const cartItems = useAppSelector((state) => state.cart.items);
 
@@ -22,6 +28,21 @@ export const CheckoutPage = () => {
         country: "",
 
     });
+
+    useEffect(() => {
+        if (addresses.length > 0) {
+            const defaultAddress =
+                addresses.find((address) => address.isDefault) || addresses[0];
+
+            setShippingAddress({
+                street: defaultAddress.street,
+                city: defaultAddress.city,
+                state: defaultAddress.state,
+                zipCode: defaultAddress.zipCode,
+                country: defaultAddress.country,
+            });
+        }
+    }, [addresses]);
 
     const totalItems = cartItems.reduce(
         (total, item) => total + item.quantity,
@@ -51,6 +72,7 @@ export const CheckoutPage = () => {
                 items: cartItems.map((item) => ({
                     product: item.product._id,
                     name: item.product.name,
+                    image: item.product.images?.[0] || "",
                     price: item.product.price,
                     quantity: item.quantity,
                 })),
@@ -72,9 +94,9 @@ export const CheckoutPage = () => {
 
             dispatch(clearCart());
 
-            alert("Order placed successfully!");
 
-            navigate("/dashboard");
+
+            navigate(`/dashboard/order-confirmation/${response.order._id}`);
         } catch (error) {
             console.error("Failed to place order:", error);
             alert("Failed to place order. Please try again.");
@@ -120,6 +142,42 @@ export const CheckoutPage = () => {
                         <h2 className="text-xl font-bold text-slate-900">
                             Shipping Address
                         </h2>
+
+                        {addresses.length > 0 && (
+                            <div className="mb-6">
+                                <label className="block font-semibold mb-2">
+                                    Choose Saved Address
+                                </label>
+
+                                <select
+                                    className="w-full border rounded-lg p-3"
+                                    onChange={(e) => {
+                                        const selectedAddress = addresses.find(
+                                            (address) => address._id === e.target.value
+                                        );
+
+                                        if (selectedAddress) {
+                                            setShippingAddress({
+                                                street: selectedAddress.street,
+                                                city: selectedAddress.city,
+                                                state: selectedAddress.state,
+                                                zipCode: selectedAddress.zipCode,
+                                                country: selectedAddress.country,
+                                            });
+                                        }
+                                    }}
+                                >
+                                    <option value="">Select an address</option>
+
+                                    {addresses.map((address) => (
+                                        <option key={address._id} value={address._id}>
+                                            {address.street}, {address.city}, {address.state}
+                                            {address.isDefault ? " (Default)" : ""}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        )}
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                             <input

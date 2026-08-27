@@ -5,6 +5,7 @@ import {
   logout,
   getMe,
   addAddress,
+  getAddresses,
   updateAddress,
   deleteAddress,
 } from "../controllers/authController.js";
@@ -21,6 +22,7 @@ router.post("/logout", logout);
 router.get("/me", protect, getMe);
 
 // Protected address management routes
+router.get("/addresses", protect, getAddresses);
 router.post("/addresses", protect, addAddress);
 router.put("/addresses/:addressId", protect, updateAddress);
 router.delete("/addresses/:addressId", protect, deleteAddress);
