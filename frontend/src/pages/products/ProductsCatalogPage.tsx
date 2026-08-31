@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useGetProductsQuery } from "@/store/api/productApi";
 
 
 export const ProductsCatalogPage = () => {
+  const [searchParams] = useSearchParams()
   const { data, isLoading, isError } = useGetProductsQuery();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "All");
 
   const products = data?.data ?? [];
 
