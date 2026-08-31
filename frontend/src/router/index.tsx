@@ -20,6 +20,8 @@ import { AddressesPage } from "@/pages/client/AddressesPage";
 import { CartPage } from "@/pages/cart/CartPage";
 import { CheckoutPage } from "@/pages/checkout/CheckoutPage";
 import { OrderConfirmationPage } from "@/pages/orderConfirmation/orderConfirmationPage";
+import AboutPage from "@/pages/about/AboutPage";
+import ContactPage from "@/pages/contact/ContactPage";
 
 export const router = createBrowserRouter([
   {
@@ -35,6 +37,8 @@ export const router = createBrowserRouter([
       { path: "products/:id", element: <ProductDetailsPage /> },
       { path: "cart", element: <CartPage /> },
       { path: "checkout", element: <CheckoutPage /> },
+      { path: "about", element: <AboutPage /> },
+      { path: "contact", element: <ContactPage /> }
 
     ],
   },
