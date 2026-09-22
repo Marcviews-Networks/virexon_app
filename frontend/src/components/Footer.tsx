@@ -19,10 +19,11 @@ function Footer() {
             </Link>
 
             <p className="mt-4 text-gray-400 leading-7 max-w-sm">
-              Building innovative solutions with modern technology
-              to help businesses grow and succeed.
+              Smart, practical products designed to make everyday
+              life simpler, better, and more effortless.
             </p>
           </div>
+
 
           {/* Quick Links */}
           <div>
@@ -31,6 +32,7 @@ function Footer() {
             </h3>
 
             <div className="flex flex-col gap-3">
+
               <Link
                 to="/"
                 className="text-gray-400 hover:text-white transition-colors"
@@ -46,10 +48,10 @@ function Footer() {
               </Link>
 
               <Link
-                to="/services"
+                to="/products"
                 className="text-gray-400 hover:text-white transition-colors"
               >
-                Services
+                Products
               </Link>
 
               <Link
@@ -58,45 +60,50 @@ function Footer() {
               >
                 Contact
               </Link>
+
             </div>
           </div>
 
-          {/* Services */}
+
+          {/* Customer Support */}
           <div>
             <h3 className="text-lg font-semibold mb-4">
-              Services
+              Customer Support
             </h3>
 
             <div className="flex flex-col gap-3">
+
               <Link
-                to="/services"
+                to="/contact"
                 className="text-gray-400 hover:text-white transition-colors"
               >
-                Web Development
+                Help & Support
               </Link>
 
               <Link
-                to="/services"
+                to="/contact"
                 className="text-gray-400 hover:text-white transition-colors"
               >
-                Software Development
+                Order Assistance
               </Link>
 
               <Link
-                to="/services"
+                to="/contact"
                 className="text-gray-400 hover:text-white transition-colors"
               >
-                Cloud Solutions
+                Shipping & Delivery
               </Link>
 
               <Link
-                to="/services"
+                to="/contact"
                 className="text-gray-400 hover:text-white transition-colors"
               >
-                IT Solutions
+                Returns & Refunds
               </Link>
+
             </div>
           </div>
+
 
           {/* Contact */}
           <div>
@@ -105,21 +112,26 @@ function Footer() {
             </h3>
 
             <div className="flex flex-col gap-3 text-gray-400">
+
               <p>📧 info@virexon.com</p>
+
               <p>📞 +91 XXXXX XXXXX</p>
+
               <p>📍 India</p>
+
             </div>
 
             <Link
               to="/contact"
-              className="inline-block mt-5 px-5 py-2.5 bg-blue-600 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              className="inline-flex items-center justify-center mt-5 px-5 py-2.5 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 transition-colors"
             >
-              Get Started
+              Contact Us
             </Link>
           </div>
 
         </div>
       </div>
+
 
       {/* Bottom Footer */}
       <div className="border-t border-gray-800">
@@ -133,6 +145,7 @@ function Footer() {
             </p>
 
             <div className="flex gap-5">
+
               <Link
                 to="/privacy"
                 className="hover:text-white transition-colors"
@@ -146,6 +159,7 @@ function Footer() {
               >
                 Terms & Conditions
               </Link>
+
             </div>
 
           </div>

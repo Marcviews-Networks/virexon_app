@@ -6,20 +6,20 @@ const AboutPage = () => {
       <section className="relative overflow-hidden bg-slate-950 text-white">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(249,115,22,0.18),transparent_35%)]" />
 
-        <div className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-24 sm:py-32 lg:py-40">
+        <div className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-20 sm:py-28 lg:py-36">
           <div className="max-w-4xl">
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-orange-400">
               About Virexon
             </p>
 
-            <h1 className="mt-6 text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight leading-tight">
+            <h1 className="mt-5 sm:mt-6 text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight leading-[1.08]">
               Innovation designed
               <span className="block text-orange-400">
                 for everyday life.
               </span>
             </h1>
 
-            <p className="mt-7 max-w-2xl text-base sm:text-lg lg:text-xl leading-relaxed text-slate-300">
+            <p className="mt-6 sm:mt-7 max-w-2xl text-base sm:text-lg lg:text-xl leading-relaxed text-slate-300">
               Virexon brings together practical products, modern technology,
               and thoughtful design to make everyday experiences simpler,
               smarter, and better.
@@ -30,20 +30,20 @@ const AboutPage = () => {
 
 
       {/* Our Story */}
-      <section className="px-5 sm:px-8 lg:px-12 py-20 sm:py-24 lg:py-32">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+      <section className="px-5 sm:px-8 lg:px-12 py-20 sm:py-24 lg:py-28">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10 sm:gap-12 lg:gap-24 items-start">
 
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-orange-500">
               Our Story
             </p>
 
-            <h2 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
+            <h2 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
               Built around the way people live.
             </h2>
           </div>
 
-          <div>
+          <div className="lg:pt-1">
             <p className="text-base sm:text-lg leading-relaxed text-slate-600">
               At Virexon, we believe technology should feel natural and
               useful. Our goal is to bring together products that solve
@@ -51,7 +51,7 @@ const AboutPage = () => {
               reliability, and thoughtful design.
             </p>
 
-            <p className="mt-6 text-base sm:text-lg leading-relaxed text-slate-600">
+            <p className="mt-5 sm:mt-6 text-base sm:text-lg leading-relaxed text-slate-600">
               From camera accessories to smart everyday essentials, we focus
               on products that fit naturally into modern lifestyles and help
               people get more from every moment.
@@ -63,7 +63,7 @@ const AboutPage = () => {
 
 
       {/* Why Virexon */}
-      <section className="bg-slate-50 px-5 sm:px-8 lg:px-12 py-20 sm:py-24 lg:py-32">
+      <section className="bg-slate-50 px-5 sm:px-8 lg:px-12 py-20 sm:py-24 lg:py-28">
         <div className="max-w-7xl mx-auto">
 
           <div className="max-w-2xl">
@@ -71,7 +71,7 @@ const AboutPage = () => {
               Why Virexon
             </p>
 
-            <h2 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
+            <h2 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
               Simple ideas. Better experiences.
             </h2>
 
@@ -82,15 +82,15 @@ const AboutPage = () => {
           </div>
 
 
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="mt-10 sm:mt-12 lg:mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
 
             {/* Card 1 */}
-            <div className="rounded-2xl bg-white border border-slate-200 p-7 shadow-sm hover:shadow-xl transition duration-300">
+            <div className="rounded-2xl bg-white border border-slate-200 p-6 sm:p-7 shadow-sm hover:shadow-xl transition duration-300">
               <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center text-orange-500 text-xl">
                 ✦
               </div>
 
-              <h3 className="mt-6 text-xl font-semibold">
+              <h3 className="mt-5 text-xl font-semibold">
                 Thoughtful Design
               </h3>
 
@@ -102,12 +102,12 @@ const AboutPage = () => {
 
 
             {/* Card 2 */}
-            <div className="rounded-2xl bg-white border border-slate-200 p-7 shadow-sm hover:shadow-xl transition duration-300">
+            <div className="rounded-2xl bg-white border border-slate-200 p-6 sm:p-7 shadow-sm hover:shadow-xl transition duration-300">
               <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center text-orange-500 text-xl">
                 ◇
               </div>
 
-              <h3 className="mt-6 text-xl font-semibold">
+              <h3 className="mt-5 text-xl font-semibold">
                 Practical Innovation
               </h3>
 
@@ -119,12 +119,12 @@ const AboutPage = () => {
 
 
             {/* Card 3 */}
-            <div className="rounded-2xl bg-white border border-slate-200 p-7 shadow-sm hover:shadow-xl transition duration-300">
+            <div className="rounded-2xl bg-white border border-slate-200 p-6 sm:p-7 shadow-sm hover:shadow-xl transition duration-300">
               <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center text-orange-500 text-xl">
                 ✓
               </div>
 
-              <h3 className="mt-6 text-xl font-semibold">
+              <h3 className="mt-5 text-xl font-semibold">
                 Reliable Products
               </h3>
 
@@ -136,12 +136,12 @@ const AboutPage = () => {
 
 
             {/* Card 4 */}
-            <div className="rounded-2xl bg-white border border-slate-200 p-7 shadow-sm hover:shadow-xl transition duration-300">
+            <div className="rounded-2xl bg-white border border-slate-200 p-6 sm:p-7 shadow-sm hover:shadow-xl transition duration-300">
               <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center text-orange-500 text-xl">
                 ∞
               </div>
 
-              <h3 className="mt-6 text-xl font-semibold">
+              <h3 className="mt-5 text-xl font-semibold">
                 Everyday Value
               </h3>
 
@@ -157,21 +157,21 @@ const AboutPage = () => {
 
 
       {/* Vision */}
-      <section className="px-5 sm:px-8 lg:px-12 py-20 sm:py-24 lg:py-32">
+      <section className="px-5 sm:px-8 lg:px-12 py-24 sm:py-28 lg:py-32">
         <div className="max-w-5xl mx-auto text-center">
 
           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-orange-500">
             Our Vision
           </p>
 
-          <h2 className="mt-5 text-3xl sm:text-4xl lg:text-6xl font-bold tracking-tight">
+          <h2 className="mt-5 text-3xl sm:text-4xl lg:text-6xl font-bold tracking-tight leading-tight">
             Make everyday technology
             <span className="block text-orange-500">
               feel effortless.
             </span>
           </h2>
 
-          <p className="mt-7 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed text-slate-600">
+          <p className="mt-6 sm:mt-7 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed text-slate-600">
             We are building Virexon around a simple idea: the best products
             are the ones that naturally become part of your everyday life.
           </p>
@@ -181,8 +181,8 @@ const AboutPage = () => {
 
 
       {/* Bottom CTA */}
-      <section className="bg-slate-950 text-white px-5 sm:px-8 lg:px-12 py-16 sm:py-20">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+      <section className="bg-slate-950 text-white px-5 sm:px-8 lg:px-12 py-14 sm:py-16 lg:py-20">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-7 sm:gap-8">
 
           <div>
             <p className="text-2xl sm:text-3xl font-bold">
