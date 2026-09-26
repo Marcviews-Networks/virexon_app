@@ -1,3 +1,5 @@
+import dns from "dns"
+dns.setServers(["8.8.8.8", "1.1.1.1"])
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { Product } from "../models/productModel.js";
@@ -284,6 +286,60 @@ const products = [
         variants: [],
         isFeatured: false,
     },
+    {
+        name: "Electric Nail Clipper",
+        slug: "electric-nail-clipper",
+        brand: "Virexon",
+        category: "Main Products",
+        subCategory: "Personal Care",
+        price: 199,
+        stock: 40,
+        description:
+            "Electric nail clipper and grinder designed for convenient nail care.",
+        specs: {
+            function: "Cutting and grinding",
+            grinding: "360° rotary grinding",
+            storage: "Back storage",
+            noise: "Low noise",
+            shockAbsorption: "Yes",
+        },
+        images: [
+            "/Products/electric-nail-clipper/1.jpeg",
+            "/Products/electric-nail-clipper/2.jpeg",
+            "/Products/electric-nail-clipper/3.jpeg",
+            "/Products/electric-nail-clipper/4.jpeg",
+            "/Products/electric-nail-clipper/5.jpeg",
+        ],
+        variants: [],
+        isFeatured: true,
+    },
+    {
+    name: "Fungal Nail Patches",
+    slug: "fungal-nail-patches",
+    brand: "Virexon",
+    category: "Main Products",
+    subCategory: "Personal Care",
+    price: 299,
+    stock: 40,
+    description:
+        "Fungal nail patches designed for overnight nail care with hydrogel patches.",
+    specs: {
+        patchSize: "4.2 cm × 7.5 cm",
+        care: "Overnight nail care",
+        material: "Hydrogel",
+        quantity: "21 PCS",
+    },
+    images: [
+        "/Products/fungal-nail-patches/1.jpeg",
+        "/Products/fungal-nail-patches/2.jpeg",
+        "/Products/fungal-nail-patches/3.jpeg",
+        "/Products/fungal-nail-patches/4.jpeg",
+        "/Products/fungal-nail-patches/5.jpeg",
+        "/Products/fungal-nail-patches/6.jpeg",
+    ],
+    variants: [],
+    isFeatured: true,
+},
 
     // =========================
     // DIWALI - CANDLE AND DIYAS
