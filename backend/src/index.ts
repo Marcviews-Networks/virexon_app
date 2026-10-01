@@ -17,11 +17,34 @@ import orderRoutes from "./routes/orderRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT ?? 5000;
-const CLIENT_URL = process.env.CLIENT_URL ?? "http://localhost:5173";
 
-// Security & logging middleware
-app.use(helmet());
-app.use(cors({ origin: CLIENT_URL, credentials: true }));
+// Parse allowed client URLs into an array
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  process.env.CLIENT_URL,
+].filter(Boolean) as string[];
+
+// Security & CORS middleware
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g., mobile apps, Postman)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS blocked for origin: ${origin}`));
+      }
+    },
+    credentials: true,
+  })
+);
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
