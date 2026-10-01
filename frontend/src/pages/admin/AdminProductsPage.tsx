@@ -8,7 +8,12 @@ import {
   Product,
 } from "@/store/api/productApi";
 
-const CATEGORIES = ["DSLR", "Mirrorless", "Lenses", "Action Cam", "Accessories"] as const;
+const CATEGORIES = [
+  "Main Products",
+  "Diwali",
+  "Phone Stands",
+  "Tripods", 
+] as const;
 
 export const AdminProductsPage = () => {
   const { data, isLoading, isError } = useGetProductsQuery();
@@ -26,7 +31,7 @@ export const AdminProductsPage = () => {
     name: "",
     slug: "",
     brand: "",
-    category: "Mirrorless" as typeof CATEGORIES[number],
+    category: "Main Products" as typeof CATEGORIES[number],
     price: "",
     stock: "",
     description: "",
@@ -49,7 +54,7 @@ export const AdminProductsPage = () => {
       name: "",
       slug: "",
       brand: "",
-      category: "Mirrorless",
+      category: "Main Products",
       price: "",
       stock: "0",
       description: "",
@@ -65,7 +70,7 @@ export const AdminProductsPage = () => {
 
     // Convert specs Map/Record object into key-value array for the UI
     const specsArray = product.specs
-      ? Object.entries(product.specs).map(([key, value]) => ({ key, value }))
+      ? Object.entries(product.specs).map(([key, value]) => ({ key, value: String(value), }))
       : [];
 
     setFormData({

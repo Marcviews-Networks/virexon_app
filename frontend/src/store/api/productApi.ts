@@ -1,7 +1,7 @@
 import { apiSlice } from "./apiSlice";
 import type { Product } from "@/types";
 
-
+export type { Product };
 
 export interface ProductResponse {
   success: boolean;
