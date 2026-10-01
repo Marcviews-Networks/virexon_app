@@ -10,10 +10,12 @@ interface Address {
   isDefault?: boolean;
 }
 
+
+
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api", // matches your Vite proxy or backend endpoint
+    baseUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api", //if not deployed url, then local vite url
     credentials: "include", // required for sending/receiving HTTP-only cookies
   }),
   tagTypes: ["User", "Product", "Order", "Address"], // <-- ADD YOUR TAG TYPES HERE
