@@ -32,7 +32,7 @@ const Hero = () => {
                 <h1 className="max-w-4xl text-4xl font-bold leading-tight sm:text-5xl md:text-6xl lg:text-7xl">
                     Light Up Your Diwali
                     <span className="block text-orange-400">
-                        with Virexon
+                        with Gadgetglam
                     </span>
                 </h1>
 

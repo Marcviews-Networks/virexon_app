@@ -25,7 +25,7 @@ export default function Navbar() {
           className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 hover:opacity-90 transition-opacity"
           onClick={() => setMenuOpen(false)}
         >
-          VIREXON<span className="text-indigo-600">.</span>
+          Gadgetglam<span className="text-indigo-600">.</span>
         </Link>
 
         {/* Desktop Navigation Links */}

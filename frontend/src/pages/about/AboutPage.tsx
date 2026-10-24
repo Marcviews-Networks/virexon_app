@@ -9,7 +9,7 @@ const AboutPage = () => {
         <div className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-20 sm:py-28 lg:py-36">
           <div className="max-w-4xl">
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-orange-400">
-              About Virexon
+              About Gadgetglam
             </p>
 
             <h1 className="mt-5 sm:mt-6 text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight leading-[1.08]">
@@ -20,7 +20,7 @@ const AboutPage = () => {
             </h1>
 
             <p className="mt-6 sm:mt-7 max-w-2xl text-base sm:text-lg lg:text-xl leading-relaxed text-slate-300">
-              Virexon brings together practical products, modern technology,
+              Gadgetglam brings together practical products, modern technology,
               and thoughtful design to make everyday experiences simpler,
               smarter, and better.
             </p>
@@ -45,7 +45,7 @@ const AboutPage = () => {
 
           <div className="lg:pt-1">
             <p className="text-base sm:text-lg leading-relaxed text-slate-600">
-              At Virexon, we believe technology should feel natural and
+              At Gadgetglam, we believe technology should feel natural and
               useful. Our goal is to bring together products that solve
               everyday problems while offering a balance of functionality,
               reliability, and thoughtful design.
@@ -62,13 +62,13 @@ const AboutPage = () => {
       </section>
 
 
-      {/* Why Virexon */}
+      {/* Why Gadgetglam */}
       <section className="bg-slate-50 px-5 sm:px-8 lg:px-12 py-20 sm:py-24 lg:py-28">
         <div className="max-w-7xl mx-auto">
 
           <div className="max-w-2xl">
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-orange-500">
-              Why Virexon
+              Why Gadgetglam
             </p>
 
             <h2 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
@@ -172,7 +172,7 @@ const AboutPage = () => {
           </h2>
 
           <p className="mt-6 sm:mt-7 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed text-slate-600">
-            We are building Virexon around a simple idea: the best products
+            We are building Gadgetglam around a simple idea: the best products
             are the ones that naturally become part of your everyday life.
           </p>
 
@@ -186,7 +186,7 @@ const AboutPage = () => {
 
           <div>
             <p className="text-2xl sm:text-3xl font-bold">
-              Discover Virexon.
+              Discover Gadgetglam.
             </p>
 
             <p className="mt-2 text-slate-400">
