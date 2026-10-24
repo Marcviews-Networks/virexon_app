@@ -10,7 +10,7 @@ const ContactPage = () => {
           <div className="max-w-4xl">
 
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-orange-400">
-              Contact Virexon
+              Contact Gadgetglam
             </p>
 
             <h1 className="mt-6 text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight leading-tight">

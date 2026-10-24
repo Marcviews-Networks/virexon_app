@@ -33,7 +33,7 @@ export const RegisterPage = () => {
             Create an Account
           </h2>
           <p className="mt-2 text-sm text-slate-400">
-            Join Virexon to start shopping cameras & accessories
+            Join Gadgetglam to start shopping cameras & accessories
           </p>
         </div>
 
