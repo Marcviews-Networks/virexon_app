@@ -314,32 +314,28 @@ const products = [
         isFeatured: true,
     },
     {
-    name: "Fungal Nail Patches",
-    slug: "fungal-nail-patches",
-    brand: "Virexon",
-    category: "Main Products",
-    subCategory: "Personal Care",
-    price: 299,
-    stock: 40,
-    description:
-        "Fungal nail patches designed for overnight nail care with hydrogel patches.",
-    specs: {
-        patchSize: "4.2 cm × 7.5 cm",
-        care: "Overnight nail care",
-        material: "Hydrogel",
-        quantity: "21 PCS",
+        name: "Gadgetglam Neck Massager",
+        slug: "gadgetglam-neck-massager",
+        brand: "Gadgetglam",
+        category: "Main Products",
+        subcategory: "Personal Care",
+        price: 1499,
+        stock: 50,
+        description:
+            "A convenient neck massager designed for a relaxing massage experience at home.",
+        specs: {
+            type: "Electric neck massager",
+            usage: "Home and personal use",
+        },
+        images: [
+            "/Products/gadgetglam-neck-massager/1.png",
+            "/Products/gadgetglam-neck-massager/2.png",
+            "/Products/gadgetglam-neck-massager/3.png",
+        ],
+        variants: [],
+        isFeatured: true,
     },
-    images: [
-        "/Products/fungal-nail-patches/1.jpeg",
-        "/Products/fungal-nail-patches/2.jpeg",
-        "/Products/fungal-nail-patches/3.jpeg",
-        "/Products/fungal-nail-patches/4.jpeg",
-        "/Products/fungal-nail-patches/5.jpeg",
-        "/Products/fungal-nail-patches/6.jpeg",
-    ],
-    variants: [],
-    isFeatured: true,
-},
+
 
     // =========================
     // DIWALI - CANDLE AND DIYAS
