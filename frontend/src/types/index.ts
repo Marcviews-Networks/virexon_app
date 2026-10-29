@@ -20,6 +20,10 @@ export interface Product {
   subCategory?: string;
   price: number;
   stock: number;
+  quantityPricing?: {
+    quantity: number;
+    price: number;
+  }[];
   description: string;
   specs: Record<string, string>;
   images: string[];

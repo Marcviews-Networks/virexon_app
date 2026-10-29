@@ -14,6 +14,16 @@ export const CartPage = () => {
 
 
     const cartItems = useAppSelector((state) => state.cart.items);
+    const getUnitPrice = (
+        product: (typeof cartItems)[number]["product"],
+        quantity: number
+    ) => {
+        const applicableTier = [...(product.quantityPricing ?? [])]
+            .filter((tier) => quantity >= tier.quantity)
+            .sort((a, b) => b.quantity - a.quantity)[0];
+
+        return applicableTier?.price ?? product.price;
+    };
 
     const totalItems = cartItems.reduce(
         (total, item) => total + item.quantity,
@@ -21,7 +31,8 @@ export const CartPage = () => {
     );
 
     const subtotal = cartItems.reduce(
-        (total, item) => total + item.product.price * item.quantity,
+        (total, item) =>
+            total + getUnitPrice(item.product, item.quantity) * item.quantity,
         0
     );
 
@@ -102,7 +113,7 @@ export const CartPage = () => {
                                     </h2>
 
                                     <p className="text-sm text-slate-500 mt-1">
-                                        ${item.product.price.toFixed(2)}
+                                        ₹{getUnitPrice(item.product, item.quantity).toLocaleString("en-IN")}
                                     </p>
 
                                     {/* Quantity */}
@@ -134,7 +145,9 @@ export const CartPage = () => {
                                 {/* Item Total + Remove */}
                                 <div className="text-right flex flex-col justify-between">
                                     <p className="font-bold text-slate-900">
-                                        ${(item.product.price * item.quantity).toFixed(2)}
+                                        ₹{(
+                                            getUnitPrice(item.product, item.quantity) * item.quantity
+                                        ).toLocaleString("en-IN")}
                                     </p>
 
                                     <button
@@ -164,14 +177,14 @@ export const CartPage = () => {
 
                     <div className="flex justify-between mt-3 text-sm text-slate-600">
                         <span>Subtotal</span>
-                        <span>${subtotal.toFixed(2)}</span>
+                        <span>₹{subtotal.toLocaleString("en-IN")}</span>
                     </div>
 
                     <div className="border-t border-slate-200 my-5" />
 
                     <div className="flex justify-between font-bold text-lg text-slate-900">
                         <span>Total</span>
-                        <span>${subtotal.toFixed(2)}</span>
+                        <span>₹{subtotal.toLocaleString("en-IN")}</span>
                     </div>
 
                     <button

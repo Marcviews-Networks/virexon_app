@@ -109,8 +109,48 @@ export const ProductDetailsPage = () => {
 
             {/* Price */}
             <p className="text-2xl font-bold text-slate-900">
-              ${product.price.toFixed(2)}
+              ₹{product.price.toLocaleString("en-IN")}
             </p>
+            {/* Quantity-Based Pricing */}
+            {product.quantityPricing && product.quantityPricing.length > 0 && (
+              <div className="mt-4">
+                <h3 className="text-sm font-semibold text-slate-700 mb-3">
+                  Quantity Discounts
+                </h3>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <div className="rounded-xl border border-slate-200 p-3">
+                    <p className="text-sm text-slate-600">Buy 1 piece</p>
+                    <p className="text-lg font-bold text-slate-900">
+                      ₹{product.price.toLocaleString("en-IN")}
+                    </p>
+                    <p className="text-xs text-slate-500">per piece</p>
+                  </div>
+
+                  {product.quantityPricing.map((tier) => (
+                    <div
+                      key={tier.quantity}
+                      className="rounded-xl border border-indigo-200 bg-indigo-50 p-3"
+                    >
+                      <p className="text-sm text-slate-600">
+                        Buy {tier.quantity} pieces
+                      </p>
+
+                      <p className="text-lg font-bold text-indigo-700">
+                        ₹{tier.price.toLocaleString("en-IN")}
+                      </p>
+
+                      <p className="text-xs text-slate-500">per piece</p>
+
+                      <p className="mt-1 text-xs font-medium text-slate-700">
+                        Total: ₹
+                        {(tier.price * tier.quantity).toLocaleString("en-IN")}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {hasVariants && (
               <div className="pt-4">
@@ -167,7 +207,7 @@ export const ProductDetailsPage = () => {
             <button
               disabled={product.stock <= 0}
               onClick={() => {
-                
+
                 dispatch(addToCart(product));
                 navigate("/cart")
               }}

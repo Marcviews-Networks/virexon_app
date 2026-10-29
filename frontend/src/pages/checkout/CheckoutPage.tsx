@@ -321,7 +321,7 @@ export const CheckoutPage = () => {
 
                     <div className="flex justify-between mt-3 text-sm text-slate-600">
                         <span>Subtotal</span>
-                        <span>${subtotal.toFixed(2)}</span>
+                        <span>₹{subtotal.toLocaleString("en-IN")}</span>
                     </div>
 
                     <div className="flex justify-between mt-3 text-sm text-slate-600">
@@ -333,7 +333,7 @@ export const CheckoutPage = () => {
 
                     <div className="flex justify-between font-bold text-lg text-slate-900">
                         <span>Total</span>
-                        <span>${subtotal.toFixed(2)}</span>
+                        <span>₹{subtotal.toLocaleString("en-IN")}</span>
                     </div>
 
                     <button

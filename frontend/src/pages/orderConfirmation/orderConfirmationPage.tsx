@@ -115,13 +115,13 @@ export const OrderConfirmationPage = () => {
                                     </p>
 
                                     <p className="text-sm text-slate-500">
-                                        Price: ${item.price.toFixed(2)}
+                                        Price: ₹{item.price.toFixed(2)}
                                     </p>
                                 </div>
                             </div>
 
                             <p className="font-bold text-slate-900">
-                                ${(item.price * item.quantity).toFixed(2)}
+                                ₹{(item.price * item.quantity).toFixed(2)}
                             </p>
                         </div>
                     ))}
@@ -138,7 +138,7 @@ export const OrderConfirmationPage = () => {
                     <div className="flex justify-between text-slate-600">
                         <span>Subtotal</span>
                         <span>
-                            ${order.totalAmount.toFixed(2)}
+                            ₹{order.totalAmount.toFixed(2)}
                         </span>
                     </div>
 
@@ -150,7 +150,7 @@ export const OrderConfirmationPage = () => {
                     <div className="border-t border-slate-200 pt-4 flex justify-between text-lg font-bold text-slate-900">
                         <span>Total</span>
                         <span>
-                            ${order.totalAmount.toFixed(2)}
+                            ₹{order.totalAmount.toFixed(2)}
                         </span>
                     </div>
                 </div>

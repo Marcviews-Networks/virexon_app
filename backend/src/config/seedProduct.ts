@@ -292,8 +292,11 @@ const products = [
         brand: "Virexon",
         category: "Main Products",
         subCategory: "Personal Care",
-        price: 199,
-        stock: 40,
+        price: 999,
+        stock: 100,
+        quantityPricing: [
+            { quantity: 2, price: 949 },
+        ],
         description:
             "Electric nail clipper and grinder designed for convenient nail care.",
         specs: {

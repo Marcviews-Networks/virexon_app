@@ -13,6 +13,10 @@ export interface IProduct extends Document {
   subCategory?: string;
   price: number;
   stock: number;
+  quantityPricing?: {
+    quantity: number;
+    price: number;
+  }[];
   description: string;
   specs: Record<string, string>; // e.g., { sensor: "Full-Frame", resolution: "45MP" }
   images: string[];
@@ -35,6 +39,12 @@ const productSchema = new Schema<IProduct>(
     subCategory: { type: String, trim: true },
     price: { type: Number, required: true, min: 0 },
     stock: { type: Number, required: true, default: 0, min: 0 },
+    quantityPricing: [
+      {
+        quantity: { type: Number, required: true, min: 1 },
+        price: { type: Number, required: true, min: 0 },
+      },
+    ],
     description: { type: String, required: true },
     specs: { type: Map, of: String },
     images: [{ type: String }],

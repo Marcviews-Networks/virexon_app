@@ -110,7 +110,7 @@ export const ProductsCatalogPage = () => {
 
               <div className="p-4 pt-0 flex items-center justify-between border-t border-slate-100 mt-4">
                 <span className="text-lg font-bold text-slate-900">
-                  ${product.price.toFixed(2)}
+                  ₹{product.price.toLocaleString("en-IN")}
                 </span>
                 <Link
                   to={`/products/${product._id}`}

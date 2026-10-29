@@ -12,7 +12,7 @@ const CATEGORIES = [
   "Main Products",
   "Diwali",
   "Phone Stands",
-  "Tripods", 
+  "Tripods",
 ] as const;
 
 export const AdminProductsPage = () => {
@@ -34,6 +34,11 @@ export const AdminProductsPage = () => {
     category: "Main Products" as typeof CATEGORIES[number],
     price: "",
     stock: "",
+    quantityPricing: [
+      { quantity: "2", price: "" },
+      { quantity: "5", price: "" },
+      { quantity: "10", price: "" },
+    ],
     description: "",
     isFeatured: false,
     images: [""] as string[],
@@ -57,6 +62,11 @@ export const AdminProductsPage = () => {
       category: "Main Products",
       price: "",
       stock: "0",
+      quantityPricing: [
+        { quantity: "2", price: "" },
+        { quantity: "5", price: "" },
+        { quantity: "10", price: "" },
+      ],
       description: "",
       isFeatured: false,
       images: [""],
@@ -80,6 +90,10 @@ export const AdminProductsPage = () => {
       category: product.category,
       price: product.price.toString(),
       stock: product.stock.toString(),
+      quantityPricing: (product.quantityPricing ?? []).map((tier) => ({
+        quantity: String(tier.quantity),
+        price: String(tier.price),
+      })),
       description: product.description,
       isFeatured: product.isFeatured ?? false,
       images: product.images && product.images.length > 0 ? product.images : [""],
@@ -157,6 +171,12 @@ export const AdminProductsPage = () => {
       category: formData.category,
       price: Number(formData.price),
       stock: Number(formData.stock),
+      quantityPricing: formData.quantityPricing
+        .filter((tier) => tier.price.trim() !== "")
+        .map((tier) => ({
+          quantity: Number(tier.quantity),
+          price: Number(tier.price),
+        })),
       description: formData.description,
       isFeatured: formData.isFeatured,
       images: formData.images.filter((img) => img.trim() !== ""),
@@ -170,8 +190,14 @@ export const AdminProductsPage = () => {
         await createProduct(payload).unwrap();
       }
       setIsModalOpen(false);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to save product:", err);
+      alert(
+        err?.data?.message ||
+        err?.error ||
+        err?.message ||
+        "Failed to save product. Check the browser console."
+      );
     }
   };
 
@@ -265,17 +291,16 @@ export const AdminProductsPage = () => {
                         </span>
                       </td>
                       <td className="py-3 px-4 font-semibold text-slate-900">
-                        ${product.price.toFixed(2)}
+                        ₹{product.price.toLocaleString("en-IN")}
                       </td>
                       <td className="py-3 px-4">
                         <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            product.stock > 5
-                              ? "bg-emerald-100 text-emerald-800"
-                              : product.stock > 0
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${product.stock > 5
+                            ? "bg-emerald-100 text-emerald-800"
+                            : product.stock > 0
                               ? "bg-amber-100 text-amber-800"
                               : "bg-red-100 text-red-800"
-                          }`}
+                            }`}
                         >
                           {product.stock} in stock
                         </span>
@@ -400,7 +425,7 @@ export const AdminProductsPage = () => {
 
                 <div>
                   <label className="block text-xs font-semibold uppercase text-slate-500 mb-1">
-                    Price ($) *
+                    Price (₹) *
                   </label>
                   <input
                     type="number"
@@ -428,7 +453,51 @@ export const AdminProductsPage = () => {
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-1 focus:ring-indigo-500 focus:outline-hidden"
                   />
                 </div>
+                {/* Quantity-Based Pricing */}
+                <div className="pt-5">
+                  <h3 className="text-sm font-semibold text-slate-700 mb-3">
+                    Quantity-Based Pricing (₹ per piece)
+                  </h3>
 
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {[2, 5, 10].map((quantity) => (
+                      <div key={quantity}>
+                        <label className="block text-xs font-semibold text-slate-500 mb-1">
+                          Price for {quantity} pieces (₹)
+                        </label>
+                        <input
+                          type="number"
+                          min="0"
+                          step="1"
+                          placeholder="Leave blank if unavailable"
+                          value={
+                            formData.quantityPricing.find(
+                              (tier) => Number(tier.quantity) === quantity
+                            )?.price ?? ""
+                          }
+                          onChange={(e) => {
+                            const updatedPricing = formData.quantityPricing.filter(
+                              (tier) => Number(tier.quantity) !== quantity
+                            );
+
+                            if (e.target.value !== "") {
+                              updatedPricing.push({
+                                quantity: String(quantity),
+                                price: e.target.value,
+                              });
+                            }
+
+                            setFormData({
+                              ...formData,
+                              quantityPricing: updatedPricing,
+                            });
+                          }}
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
                 <div className="pt-5">
                   <label className="inline-flex items-center gap-2 cursor-pointer">
                     <input
@@ -480,7 +549,7 @@ export const AdminProductsPage = () => {
                   {formData.images.map((imgUrl, idx) => (
                     <div key={idx} className="flex gap-2 items-center">
                       <input
-                        type="url"
+                        type="text"
                         placeholder="https://images.unsplash.com/photo-..."
                         value={imgUrl}
                         onChange={(e) => handleImageChange(idx, e.target.value)}

@@ -60,7 +60,7 @@ export const getProductById = async (req: Request, res: Response): Promise<void>
 // @route   POST /api/products
 export const createProduct = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name, slug, brand, category, price, stock, description, specs, images, isFeatured } = req.body;
+    const { name, slug, brand, category, price, stock, quantityPricing, description, specs, images, isFeatured } = req.body;
 
     const generatedSlug = slug ? createSlug(slug) : createSlug(name);
 
@@ -77,6 +77,7 @@ export const createProduct = async (req: Request, res: Response): Promise<void> 
       category,
       price,
       stock,
+      quantityPricing,
       description,
       specs: specs || {},
       images: images || [],
