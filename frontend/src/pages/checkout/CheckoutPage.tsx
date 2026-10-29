@@ -16,6 +16,9 @@ export const CheckoutPage = () => {
 
     const cartItems = useAppSelector((state) => state.cart.items);
 
+    const [couponCode, setCouponCode] = useState("");
+    const [couponApplied, setCouponApplied] = useState(false);
+
     const [createOrder, { isLoading }] = useCreateOrderMutation();
 
     const [paymentMethod, setPaymentMethod] = useState<"cod" | "online">("cod");
@@ -53,6 +56,12 @@ export const CheckoutPage = () => {
         (total, item) => total + item.product.price * item.quantity,
         0
     );
+    const discount =
+        couponApplied && couponCode.trim().toUpperCase() === "GADGET5"
+            ? subtotal * 0.05
+            : 0;
+
+    const finalTotal = subtotal - discount;
 
     const handlePlaceOrder = async () => {
 
@@ -331,9 +340,56 @@ export const CheckoutPage = () => {
 
                     <div className="border-t border-slate-200 my-5" />
 
+                    <div className="mt-4">
+                        <label className="block text-sm font-medium text-slate-700 mb-2">
+                            Coupon Code
+                        </label>
+
+                        <div className="flex gap-2">
+                            <input
+                                type="text"
+                                value={couponCode}
+                                onChange={(e) => {
+                                    setCouponCode(e.target.value);
+                                    setCouponApplied(false);
+                                }}
+                                placeholder="Enter Gadget5"
+                                className="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                            />
+
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    if (couponCode.trim().toUpperCase() === "GADGET5") {
+                                        setCouponCode("Gadget5");
+                                        setCouponApplied(true);
+                                    } else {
+                                        setCouponApplied(false);
+                                        alert("Invalid coupon code. Please enter Gadget5.");
+                                    }
+                                }}
+                                className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
+                            >
+                                Apply
+                            </button>
+                        </div>
+
+                        {couponApplied && (
+                            <p className="mt-2 text-sm text-green-600">
+                                Gadget5 applied successfully! You saved 5%.
+                            </p>
+                        )}
+
+                        {couponApplied && (
+                            <div className="mt-3 flex justify-between text-sm text-green-700">
+                                <span>Discount (5%)</span>
+                                <span>-₹{discount.toLocaleString("en-IN")}</span>
+                            </div>
+                        )}
+                    </div>
                     <div className="flex justify-between font-bold text-lg text-slate-900">
                         <span>Total</span>
-                        <span>₹{subtotal.toLocaleString("en-IN")}</span>
+                        <span>₹{finalTotal.toLocaleString("en-IN")}</span>
                     </div>
 
                     <button

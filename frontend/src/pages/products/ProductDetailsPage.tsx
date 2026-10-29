@@ -1,6 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useGetProductByIdQuery } from "@/store/api/productApi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { addToCart } from "@/store/cartSlice";
 import { useAppDispatch } from "@/store/hooks";
 
@@ -13,11 +13,195 @@ export const ProductDetailsPage = () => {
   const { data, isLoading, isError } = useGetProductByIdQuery(id || "");
 
   const product = data?.data;
+  const [showCouponPopup, setShowCouponPopup] = useState(false);
+  const [couponCopied, setCouponCopied] = useState(false);
+
+  const [pincode, setPincode] = useState("");
+  const [deliveryMessage, setDeliveryMessage] = useState("");
+  const [checkingDelivery, setCheckingDelivery] = useState(false);
+
+  useEffect(() => {
+    if (!product) return;
+
+    const timer = window.setTimeout(() => {
+      setShowCouponPopup(true);
+    }, 500);
+
+    return () => window.clearTimeout(timer);
+  }, [id, product]);
   const hasVariants = product?.variants && product.variants.length > 0;
 
   const currentImages = hasVariants
     ? product.variants?.[selectedVariant]?.images || []
     : product?.images || [];
+
+  const checkDelivery = async () => {
+    const enteredPincode = pincode.trim();
+
+    if (!/^\d{6}$/.test(enteredPincode)) {
+      setDeliveryMessage("Please enter a valid 6-digit pincode.");
+      return;
+    }
+
+    setCheckingDelivery(true);
+    setDeliveryMessage("");
+
+    try {
+      const response = await fetch(
+        `https://api.postalpincode.in/pincode/${enteredPincode}`
+      );
+
+      const result = await response.json();
+
+      if (result[0]?.Status !== "Success" || !result[0]?.PostOffice?.length) {
+        setDeliveryMessage("Pincode not found. Please check and try again.");
+        return;
+      }
+
+      const postOffice = result[0].PostOffice[0];
+      const state = postOffice.State?.toLowerCase();
+      const district = postOffice.District?.toLowerCase();
+
+      let deliveryDays = "";
+      let deliveryRange = "";
+
+      if (state === "bihar") {
+        deliveryDays = "1–2 days";
+        deliveryRange = "Day 2";
+      } else if (
+        state === "jharkhand" ||
+        state === "west bengal" ||
+        (state === "uttar pradesh" &&
+          [
+            "varanasi",
+            "chandauli",
+            "ghazipur",
+            "ballia",
+            "jaunpur",
+            "azamgarh",
+            "mau",
+            "mirzapur",
+            "sonbhadra",
+            "bhadohi",
+            "prayagraj",
+            "kaushambi",
+            "pratapgarh",
+            "deoria",
+            "kushinagar",
+            "gorakhpur",
+            "maharajganj",
+            "basti",
+            "sant kabir nagar",
+            "siddharthnagar",
+          ].some((name) => district?.includes(name))
+        )
+      ) {
+        deliveryDays = "2–3 days";
+        deliveryRange = "Day 3";
+      } else if (
+        [
+          "odisha",
+          "haryana",
+          "madhya pradesh",
+          "chhattisgarh",
+        ].includes(state) ||
+        state === "delhi" ||
+        state === "nct of delhi" ||
+        state === "national capital territory of delhi" ||
+        (state === "uttar pradesh" &&
+          [
+            "western uttar pradesh",
+            "meerut",
+            "ghaziabad",
+            "noida",
+            "gautam buddha nagar",
+            "agra",
+            "mathura",
+            "aligarh",
+            "moradabad",
+            "bareilly",
+            "saharanpur",
+            "muzaffarnagar",
+            "bulandshahr",
+            "hapur",
+            "baghpat",
+            "shamli",
+            "bijnor",
+            "amroha",
+            "rampur",
+            "sambhal",
+            "firozabad",
+            "etah",
+            "kasganj",
+          ].some((name) => district?.includes(name))
+        )
+      ) {
+        deliveryDays = "3–4 days";
+        deliveryRange = "Day 4";
+      } else if (
+        [
+          "punjab",
+          "rajasthan",
+          "maharashtra",
+          "gujarat",
+          "telangana",
+          "andhra pradesh",
+        ].includes(state)
+      ) {
+        deliveryDays = "4–5 days";
+        deliveryRange = "Day 5";
+      } else if (
+        [
+          "karnataka",
+          "tamil nadu",
+          "kerala",
+          "himachal pradesh",
+          "uttarakhand",
+          "assam",
+        ].includes(state)
+      ) {
+        deliveryDays = "5–6 days";
+        deliveryRange = "Day 6";
+      } else if (
+        [
+          "jammu and kashmir",
+          "jammu & kashmir",
+          "ladakh",
+          "meghalaya",
+          "tripura",
+          "manipur",
+          "mizoram",
+          "nagaland",
+          "arunachal pradesh",
+          "sikkim",
+          "goa",
+        ].includes(state)
+      ) {
+        deliveryDays = "6–8 days";
+        deliveryRange = "Day 7";
+      } else if (state === "uttar pradesh") {
+        setDeliveryMessage(
+          "We couldn't determine the delivery zone for this Uttar Pradesh district. Please contact support."
+        );
+        return;
+      } else {
+        setDeliveryMessage(
+          "Delivery estimate isn't available for this location yet. Please contact support."
+        );
+        return;
+      }
+
+      setDeliveryMessage(
+        `Delivery available to ${postOffice.District}, ${postOffice.State}. Estimated delivery: ${deliveryDays} (${deliveryRange}).`
+      );
+    } catch {
+      setDeliveryMessage(
+        "Unable to check delivery right now. Please try again."
+      );
+    } finally {
+      setCheckingDelivery(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -202,6 +386,53 @@ export const ProductDetailsPage = () => {
 
           </div>
 
+          {/* Check Delivery */}
+          <div className="mt-6 space-y-3">
+            <label
+              htmlFor="delivery-pincode"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Check delivery availability
+            </label>
+
+            <div className="flex gap-2">
+              <input
+                id="delivery-pincode"
+                type="text"
+                inputMode="numeric"
+                maxLength={6}
+                placeholder="Enter 6-digit pincode"
+                value={pincode}
+                onChange={(e) => {
+                  setPincode(e.target.value.replace(/\D/g, "").slice(0, 6));
+                  setDeliveryMessage("");
+                }}
+                className="min-w-0 flex-1 rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+              />
+
+              <button
+                type="button"
+                onClick={checkDelivery}
+                disabled={checkingDelivery}
+                className="rounded-lg bg-indigo-600 px-4 py-3 font-semibold text-white hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {checkingDelivery ? "Checking..." : "Check"}
+              </button>
+            </div>
+
+            {deliveryMessage && (
+              <p
+                role="status"
+                className={`text-sm ${deliveryMessage.startsWith("Delivery available")
+                    ? "text-green-700"
+                    : "text-red-600"
+                  }`}
+              >
+                {deliveryMessage}
+              </p>
+            )}
+          </div>
+
           {/* Add To Cart */}
           <div className="pt-8">
             <button
@@ -220,6 +451,60 @@ export const ProductDetailsPage = () => {
         </div>
 
       </div>
+      {showCouponPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="relative w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-2xl">
+            <button
+              onClick={() => setShowCouponPopup(false)}
+              className="absolute right-3 top-3 text-xl text-slate-500 hover:text-slate-900"
+              aria-label="Close coupon popup"
+            >
+              &times;
+            </button>
+
+            <div className="mb-3 text-4xl">🎉</div>
+
+            <h2 className="text-2xl font-bold text-slate-900">
+              Get 5% OFF!
+            </h2>
+
+            <p className="mt-2 text-sm text-slate-600">
+              Use this coupon on any product at Gadgetglam.
+            </p>
+
+            <div className="mt-5 rounded-xl border-2 border-dashed border-indigo-400 bg-indigo-50 p-4">
+              <p className="text-xs font-medium uppercase tracking-wider text-slate-500">
+                Your Coupon Code
+              </p>
+
+              <p className="mt-1 text-2xl font-extrabold tracking-widest text-indigo-700">
+                Gadget5
+              </p>
+            </div>
+
+            <button
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText("Gadget5");
+                  setCouponCopied(true);
+                } catch {
+                  setCouponCopied(false);
+                }
+              }}
+              className="mt-5 w-full rounded-lg bg-indigo-600 px-4 py-3 font-semibold text-white hover:bg-indigo-700"
+            >
+              {couponCopied ? "Code Copied!" : "Copy Coupon Code"}
+            </button>
+
+            <button
+              onClick={() => setShowCouponPopup(false)}
+              className="mt-3 w-full py-2 text-sm font-medium text-slate-600 hover:text-slate-900"
+            >
+              Continue Shopping
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
