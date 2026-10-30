@@ -10,16 +10,21 @@ interface Address {
   isDefault?: boolean;
 }
 
-
-
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api", //if not deployed url, then local vite url
-    credentials: "include", // required for sending/receiving HTTP-only cookies
+    baseUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api",
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        headers.set("authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
   }),
-  tagTypes: ["User", "Product", "Order", "Address"], // <-- ADD YOUR TAG TYPES HERE
+  tagTypes: ["User", "Product", "Order", "Address"],
   endpoints: (builder) => ({
+    // Added back the endpoint so the exported hook works!
     getAddresses: builder.query<Address[], void>({
       query: () => "/auth/addresses",
       providesTags: ["Address"],
@@ -27,6 +32,4 @@ export const apiSlice = createApi({
   }),
 });
 
-export const {
-  useGetAddressesQuery,
-} = apiSlice;
+export const { useGetAddressesQuery } = apiSlice;
