@@ -16,6 +16,7 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import orderRoutes from "./routes/orderRoutes.js";
 
 const app = express();
+app.set("trust proxy", 1); // <-- ADD THIS LINE HERE FOR LOGIN ISSUE
 const PORT = process.env.PORT ?? 5000;
 
 // Parse allowed client URLs into an array
