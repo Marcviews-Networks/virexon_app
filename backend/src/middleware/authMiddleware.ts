@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
+const JWT_SECRET = process.env.JWT_SECRET ?? "fallback_secret";
+
 export interface AuthRequest extends Request {
   user?: {
     id: string;
@@ -8,8 +10,18 @@ export interface AuthRequest extends Request {
   };
 }
 
-export const protect = (req: AuthRequest, res: Response, next: NextFunction) => {
-  const token = req.cookies?.token || req.headers.authorization?.split(" ")[1];
+// Protect routes - Verifies Bearer token from header (or fallback cookie)
+export const protect = (req: AuthRequest, res: Response, next: NextFunction): void => {
+  let token: string | undefined;
+
+  // 1. Check Authorization header first (Hostinger-safe approach)
+  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+    token = req.headers.authorization.split(" ")[1];
+  } 
+  // 2. Fallback to cookie if available
+  else if (req.cookies?.token) {
+    token = req.cookies.token;
+  }
 
   if (!token) {
     res.status(401).json({ success: false, message: "Not authorized, token missing" });
@@ -17,18 +29,20 @@ export const protect = (req: AuthRequest, res: Response, next: NextFunction) => 
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET ?? "fallback_secret") as {
+    const decoded = jwt.verify(token, JWT_SECRET) as {
       id: string;
       role: "client" | "admin";
     };
+    
     req.user = decoded;
     next();
-  } catch {
+  } catch (error) {
     res.status(401).json({ success: false, message: "Token invalid or expired" });
   }
 };
 
-export const adminOnly = (req: AuthRequest, res: Response, next: NextFunction) => {
+// Admin only middleware shortcut
+export const adminOnly = (req: AuthRequest, res: Response, next: NextFunction): void => {
   if (req.user && req.user.role === "admin") {
     next();
   } else {
