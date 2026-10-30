@@ -11,19 +11,26 @@ export const LoginPage = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
-   e.preventDefault();
-  setErrorMsg(null);
+    e.preventDefault();
+    setErrorMsg(null);
 
-  try {
-    const res = await login({ email, password }).unwrap();
-    if (res.user.role === "admin") {
-      navigate("/admin", { replace: true });
-    } else {
-      navigate("/dashboard", { replace: true });
+    try {
+      const res = await login({ email, password }).unwrap();
+
+      // --- ADDED THESE 2 LINES HERE ---
+      if (res.token) {
+        localStorage.setItem("token", res.token);
+      }
+      // ------------------------------
+
+      if (res.user.role === "admin") {
+        navigate("/admin", { replace: true });
+      } else {
+        navigate("/dashboard", { replace: true });
+      }
+    } catch (err: any) {
+      setErrorMsg(err?.data?.message || "Invalid email or password.");
     }
-  } catch (err: any) {
-    setErrorMsg(err?.data?.message || "Invalid email or password.");
-  }
   };
 
   return (
