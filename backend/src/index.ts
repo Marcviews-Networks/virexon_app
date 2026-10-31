@@ -14,6 +14,7 @@ import authRoutes from "./routes/authRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
 
 const app = express();
 app.set("trust proxy", 1); // <-- ADD THIS LINE HERE FOR LOGIN ISSUE
@@ -58,6 +59,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 // Global error handler (must be last)
 app.use(errorHandler);

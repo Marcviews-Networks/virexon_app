@@ -3,6 +3,10 @@ import { useGetProductByIdQuery } from "@/store/api/productApi";
 import { useEffect, useState } from "react";
 import { addToCart } from "@/store/cartSlice";
 import { useAppDispatch } from "@/store/hooks";
+import {
+  useGetProductReviewsQuery,
+  useCreateReviewMutation,
+} from "@/store/api/reviewApi";
 
 export const ProductDetailsPage = () => {
   const navigate = useNavigate();
@@ -13,12 +17,24 @@ export const ProductDetailsPage = () => {
   const { data, isLoading, isError } = useGetProductByIdQuery(id || "");
 
   const product = data?.data;
+  const {
+    data: reviewsData,
+    isLoading: reviewsLoading,
+  } = useGetProductReviewsQuery(id || "");
+
+  const [createReview, { isLoading: submittingReview }] =
+    useCreateReviewMutation();
   const [showCouponPopup, setShowCouponPopup] = useState(false);
   const [couponCopied, setCouponCopied] = useState(false);
 
   const [pincode, setPincode] = useState("");
   const [deliveryMessage, setDeliveryMessage] = useState("");
   const [checkingDelivery, setCheckingDelivery] = useState(false);
+
+  const [reviewName, setReviewName] = useState("");
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviewMessage, setReviewMessage] = useState("");
 
   useEffect(() => {
     if (!product) return;
@@ -295,6 +311,19 @@ export const ProductDetailsPage = () => {
             <p className="text-2xl font-bold text-slate-900">
               ₹{product.price.toLocaleString("en-IN")}
             </p>
+
+            {/* Bulk Purchase Note */}
+            <p className="mt-2 text-sm text-slate-600">
+              Buying in bulk? Contact us at{" "}
+              <a
+                href="mailto:sales@gadgetglam.store"
+                className="font-medium text-indigo-600 hover:underline"
+              >
+                sales@gadgetglam.store
+              </a>
+              .
+            </p>
+
             {/* Quantity-Based Pricing */}
             {product.quantityPricing && product.quantityPricing.length > 0 && (
               <div className="mt-4">
@@ -424,8 +453,8 @@ export const ProductDetailsPage = () => {
               <p
                 role="status"
                 className={`text-sm ${deliveryMessage.startsWith("Delivery available")
-                    ? "text-green-700"
-                    : "text-red-600"
+                  ? "text-green-700"
+                  : "text-red-600"
                   }`}
               >
                 {deliveryMessage}
@@ -451,6 +480,126 @@ export const ProductDetailsPage = () => {
         </div>
 
       </div>
+
+      {/* Customer Reviews */}
+      <section className="mt-12 border-t border-slate-200 pt-8">
+        <h2 className="text-2xl font-bold text-slate-900">
+          Customer Reviews
+        </h2>
+
+        {reviewsLoading ? (
+          <p className="mt-4 text-slate-500">Loading reviews...</p>
+        ) : reviewsData?.data?.length ? (
+          <div className="mt-5 space-y-4">
+            {reviewsData.data.map((review) => (
+              <article
+                key={review._id}
+                className="rounded-xl border border-slate-200 p-4"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="font-semibold text-slate-900">
+                    {review.name}
+                  </h3>
+                  <span className="text-amber-500">
+                    {"★".repeat(review.rating)}
+                    {"☆".repeat(5 - review.rating)}
+                  </span>
+                </div>
+                <p className="mt-2 text-slate-600">{review.comment}</p>
+                <p className="mt-2 text-xs text-slate-400">
+                  {new Date(review.createdAt).toLocaleDateString()}
+                </p>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-3 text-slate-500">
+            No approved reviews yet. Be the first to share your experience!
+          </p>
+        )}
+
+        <h3 className="mt-8 text-lg font-semibold text-slate-900">
+          Write a Review
+        </h3>
+
+        <form
+          className="mt-4 max-w-xl space-y-4"
+          onSubmit={async (event) => {
+            event.preventDefault();
+            setReviewMessage("");
+
+            try {
+              await createReview({
+                productId: id || "",
+                name: reviewName.trim(),
+                rating: reviewRating,
+                comment: reviewComment.trim(),
+              }).unwrap();
+
+              setReviewMessage(
+                "Review submitted successfully! It will appear after admin approval."
+              );
+              setReviewName("");
+              setReviewRating(5);
+              setReviewComment("");
+            } catch {
+              setReviewMessage("Could not submit your review. Please try again.");
+            }
+          }}
+        >
+          <input
+            type="text"
+            value={reviewName}
+            onChange={(event) => setReviewName(event.target.value)}
+            placeholder="Your name"
+            required
+            maxLength={80}
+            className="w-full rounded-lg border border-slate-300 px-4 py-3"
+          />
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-slate-700">
+              Your rating
+            </label>
+            <select
+              value={reviewRating}
+              onChange={(event) => setReviewRating(Number(event.target.value))}
+              className="w-full rounded-lg border border-slate-300 px-4 py-3"
+            >
+              <option value={5}>★★★★★ — Excellent</option>
+              <option value={4}>★★★★☆ — Very good</option>
+              <option value={3}>★★★☆☆ — Good</option>
+              <option value={2}>★★☆☆☆ — Fair</option>
+              <option value={1}>★☆☆☆☆ — Poor</option>
+            </select>
+          </div>
+
+          <textarea
+            value={reviewComment}
+            onChange={(event) => setReviewComment(event.target.value)}
+            placeholder="Share your experience with this product"
+            required
+            maxLength={1000}
+            rows={4}
+            className="w-full rounded-lg border border-slate-300 px-4 py-3"
+          />
+
+          <button
+            type="submit"
+            disabled={submittingReview}
+            className="rounded-lg bg-indigo-600 px-6 py-3 font-semibold text-white hover:bg-indigo-500 disabled:opacity-60"
+          >
+            {submittingReview ? "Submitting..." : "Submit Review"}
+          </button>
+
+          {reviewMessage && (
+            <p role="status" className="text-sm text-slate-600">
+              {reviewMessage}
+            </p>
+          )}
+        </form>
+      </section>
+
       {showCouponPopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="relative w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-2xl">

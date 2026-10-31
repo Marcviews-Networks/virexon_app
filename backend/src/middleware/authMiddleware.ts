@@ -10,18 +10,11 @@ export interface AuthRequest extends Request {
   };
 }
 
-// Protect routes - Verifies Bearer token from header (or fallback cookie)
-export const protect = (req: AuthRequest, res: Response, next: NextFunction): void => {
-  let token: string | undefined;
-
-  // 1. Check Authorization header first (Hostinger-safe approach)
-  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
-    token = req.headers.authorization.split(" ")[1];
-  } 
-  // 2. Fallback to cookie if available
-  else if (req.cookies?.token) {
-    token = req.cookies.token;
-  }
+export const protect = (req: AuthRequest, res: Response, next: NextFunction) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.startsWith("Bearer ")
+    ? authHeader.slice(7)
+    : undefined;
 
   if (!token) {
     res.status(401).json({ success: false, message: "Not authorized, token missing" });

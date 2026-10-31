@@ -11,12 +11,14 @@ export const AdminLayout = () => {
 
   const handleLogout = async () => {
     await logout();
+    localStorage.removeItem("token");
     navigate("/login");
   };
 
   const navLinks = [
     { label: "Dashboard Overview", path: "/admin" },
     { label: "Manage Products", path: "/admin/products" },
+    { label: "Manage Reviews", path: "/admin/reviews" },
   ];
 
   return (
@@ -31,9 +33,8 @@ export const AdminLayout = () => {
 
       {/* Sidebar (Responsive Drawer) */}
       <aside
-        className={`fixed inset-y-0 left-0 z-30 w-64 bg-slate-900 text-white flex flex-col justify-between transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 z-30 w-64 bg-slate-900 text-white flex flex-col justify-between transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div>
           <div className="flex items-center justify-between p-6 border-b border-slate-800">
@@ -56,11 +57,10 @@ export const AdminLayout = () => {
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsSidebarOpen(false)}
-                  className={`px-4 py-2.5 rounded-lg transition-colors font-medium text-sm ${
-                    isActive
-                      ? "bg-indigo-600 text-white"
-                      : "text-slate-300 hover:bg-slate-800 hover:text-white"
-                  }`}
+                  className={`px-4 py-2.5 rounded-lg transition-colors font-medium text-sm ${isActive
+                    ? "bg-indigo-600 text-white"
+                    : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                    }`}
                 >
                   {link.label}
                 </Link>

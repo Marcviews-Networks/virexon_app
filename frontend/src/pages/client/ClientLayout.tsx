@@ -11,6 +11,7 @@ export const ClientLayout = () => {
 
   const handleLogout = async () => {
     await logout().unwrap();
+    localStorage.removeItem("token");
     navigate("/login");
   };
 
@@ -86,11 +87,10 @@ export const ClientLayout = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`block px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                    isActive
+                  className={`block px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${isActive
                       ? "bg-indigo-600 text-white"
                       : "text-slate-600 hover:bg-slate-200/60 hover:text-slate-900"
-                  }`}
+                    }`}
                 >
                   {item.label}
                 </Link>

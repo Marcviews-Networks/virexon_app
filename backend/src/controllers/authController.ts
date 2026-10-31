@@ -6,25 +6,28 @@ import { AuthRequest } from "../middleware/authMiddleware.js";
 
 const JWT_SECRET = process.env.JWT_SECRET ?? "fallback_secret";
 
-// Helper function to issue JWT cookie
+// Helper function to return JWT token in response
 const sendTokenResponse = (
   user: { _id: unknown; role: string },
   statusCode: number,
   res: Response
 ) => {
-  const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
-    expiresIn: "1d",
-  });
+  const token = jwt.sign(
+    { id: user._id, role: user.role },
+    JWT_SECRET,
+    { expiresIn: "1d" }
+  );
 
-  // Send token directly in the JSON response body
   res.status(statusCode).json({
     success: true,
-    token, // <--- Send token here
+    token,
     user: {
       id: user._id,
       role: user.role,
     },
   });
+  
+
 };
 
 // POST /api/auth/register

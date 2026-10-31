@@ -7,6 +7,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AdminLayout } from "@/pages/admin/AdminLayout";
 import { AdminDashboardPage } from "@/pages/admin/AdminDashboardPage";
 import { AdminProductsPage } from "@/pages/admin/AdminProductsPage";
+import { AdminReviewsPage } from "@/pages/admin/AdminReviewsPage";
 
 // Client Dashboard Imports
 import { ClientLayout } from "@/pages/client/ClientLayout";
@@ -73,6 +74,7 @@ export const router = createBrowserRouter([
           { index: true, element: <AdminDashboardPage /> },
           // CRUD Management Table (Admin Only)
           { path: "products", element: <AdminProductsPage /> },
+          { path: "reviews", element: <AdminReviewsPage /> },
         ],
       },
     ],

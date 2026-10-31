@@ -13,6 +13,7 @@ export default function Navbar() {
   const handleLogout = async () => {
     setMenuOpen(false);
     await logout();
+    localStorage.removeItem("token");
     navigate("/login");
   };
 
