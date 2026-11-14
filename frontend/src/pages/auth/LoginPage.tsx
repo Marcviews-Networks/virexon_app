@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "@/store/api/authApi";
+import { useDispatch } from "react-redux";
+import { apiSlice } from "@/store/api/apiSlice";
 
 export const LoginPage = () => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -17,12 +20,15 @@ export const LoginPage = () => {
     try {
       const res = await login({ email, password }).unwrap();
 
-      // --- ADDED THESE 2 LINES HERE ---
+      // Save JWT token first
       if (res.token) {
         localStorage.setItem("token", res.token);
       }
-      // ------------------------------
 
+      // Refresh authentication data after saving token
+      dispatch(apiSlice.util.invalidateTags(["User"]));
+
+      // Redirect according to user role
       if (res.user.role === "admin") {
         navigate("/admin", { replace: true });
       } else {
@@ -88,12 +94,16 @@ export const LoginPage = () => {
             {isLoading ? "Signing in..." : "Sign In"}
           </button>
         </form>
+
         <p className="mt-6 text-center text-xs text-slate-400">
-  Don't have an account?{" "}
-  <Link to="/register" className="font-medium text-indigo-400 hover:text-indigo-300">
-    Sign up
-  </Link>
-</p>
+          Don't have an account?{" "}
+          <Link
+            to="/register"
+            className="font-medium text-indigo-400 hover:text-indigo-300"
+          >
+            Sign up
+          </Link>
+        </p>
       </div>
     </div>
   );

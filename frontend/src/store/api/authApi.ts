@@ -58,14 +58,13 @@ export const authApi = apiSlice.injectEndpoints({
       providesTags: ["User"],
     }),
 
-    // --- Address Mutations ---
     addAddress: builder.mutation<{ success: boolean; data: Address[] }, Omit<Address, "_id">>({
       query: (addressData) => ({
         url: "/auth/addresses",
         method: "POST",
         body: addressData,
       }),
-      invalidatesTags: ["User"], // Automatically triggers getMe to update user state
+      invalidatesTags: ["User"],
     }),
 
     updateAddress: builder.mutation<{ success: boolean; data: Address[] }, Address>({

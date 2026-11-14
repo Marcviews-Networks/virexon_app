@@ -16,9 +16,16 @@ export const apiSlice = createApi({
     baseUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api",
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("token");
+
+      console.log("AUTH DEBUG:", {
+        tokenExists: !!token,
+        tokenLength: token?.length,
+      });
+
       if (token) {
-        headers.set("authorization", `Bearer ${token}`);
+        headers.set("Authorization", `Bearer ${token}`);
       }
+
       return headers;
     },
   }),

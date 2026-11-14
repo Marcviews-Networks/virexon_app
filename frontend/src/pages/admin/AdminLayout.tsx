@@ -1,18 +1,27 @@
 import { useState } from "react";
 import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useLogoutMutation, useGetMeQuery } from "@/store/api/authApi";
+import { useDispatch } from "react-redux";
+import { apiSlice } from "@/store/api/apiSlice";
 
 export const AdminLayout = () => {
   const { data } = useGetMeQuery();
   const [logout] = useLogoutMutation();
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleLogout = async () => {
-    await logout();
-    localStorage.removeItem("token");
-    navigate("/login");
+    try {
+      await logout().unwrap();
+    } catch (error) {
+      console.error("Logout API error:", error);
+    } finally {
+      localStorage.removeItem("token");
+      dispatch(apiSlice.util.resetApiState());
+      navigate("/login", { replace: true });
+    }
   };
 
   const navLinks = [
@@ -23,7 +32,6 @@ export const AdminLayout = () => {
 
   return (
     <div className="flex h-screen bg-slate-100 text-slate-800 overflow-hidden">
-      {/* Mobile Overlay */}
       {isSidebarOpen && (
         <div
           onClick={() => setIsSidebarOpen(false)}
@@ -31,10 +39,10 @@ export const AdminLayout = () => {
         />
       )}
 
-      {/* Sidebar (Responsive Drawer) */}
       <aside
-        className={`fixed inset-y-0 left-0 z-30 w-64 bg-slate-900 text-white flex flex-col justify-between transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+        className={`fixed inset-y-0 left-0 z-30 w-64 bg-slate-900 text-white flex flex-col justify-between transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
         <div>
           <div className="flex items-center justify-between p-6 border-b border-slate-800">
@@ -57,10 +65,11 @@ export const AdminLayout = () => {
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsSidebarOpen(false)}
-                  className={`px-4 py-2.5 rounded-lg transition-colors font-medium text-sm ${isActive
-                    ? "bg-indigo-600 text-white"
-                    : "text-slate-300 hover:bg-slate-800 hover:text-white"
-                    }`}
+                  className={`px-4 py-2.5 rounded-lg transition-colors font-medium text-sm ${
+                    isActive
+                      ? "bg-indigo-600 text-white"
+                      : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                  }`}
                 >
                   {link.label}
                 </Link>
@@ -85,9 +94,7 @@ export const AdminLayout = () => {
         </div>
       </aside>
 
-      {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Top Navbar for Mobile Toggle */}
         <header className="flex items-center justify-between bg-white px-4 py-3 border-b border-slate-200 md:hidden">
           <button
             onClick={() => setIsSidebarOpen(true)}
@@ -95,7 +102,9 @@ export const AdminLayout = () => {
           >
             ☰
           </button>
-          <span className="font-semibold text-slate-800 text-sm">Gadgetglam Admin</span>
+          <span className="font-semibold text-slate-800 text-sm">
+            Gadgetglam Admin
+          </span>
         </header>
 
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
