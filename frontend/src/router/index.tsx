@@ -20,10 +20,12 @@ import { ProductDetailsPage } from "@/pages/products/ProductDetailsPage";
 import { AddressesPage } from "@/pages/client/AddressesPage";
 import { CartPage } from "@/pages/cart/CartPage";
 import { CheckoutPage } from "@/pages/checkout/CheckoutPage";
+import PaymentReturnPage from "@/pages/checkout/PaymentReturnPage";
 import { OrderConfirmationPage } from "@/pages/orderConfirmation/orderConfirmationPage";
 import AboutPage from "@/pages/about/AboutPage";
 import ContactPage from "@/pages/contact/ContactPage";
 
+import { MyOrdersPage } from "@/pages/client/MyOrdersPage";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -33,14 +35,13 @@ export const router = createBrowserRouter([
       { path: "login", element: <LoginPage /> },
       { path: "register", element: <RegisterPage /> },
 
-      // PUBLIC PRODUCT CATALOG (Visible to Everyone)
       { path: "products", element: <ProductsCatalogPage /> },
       { path: "products/:id", element: <ProductDetailsPage /> },
       { path: "cart", element: <CartPage /> },
       { path: "checkout", element: <CheckoutPage /> },
+      { path: "payment/return", element: <PaymentReturnPage /> },
       { path: "about", element: <AboutPage /> },
-      { path: "contact", element: <ContactPage /> }
-
+      { path: "contact", element: <ContactPage /> },
     ],
   },
 
@@ -53,12 +54,13 @@ export const router = createBrowserRouter([
         element: <ClientLayout />,
         children: [
           { index: true, element: <ClientDashboardPage /> },
+          { path: "orders", element: <MyOrdersPage /> },
           { path: "addresses", element: <AddressesPage /> },
-
           {
-            path: "order-confirmation/:orderId", element: <OrderConfirmationPage />,
+            path: "order-confirmation/:orderId",
+            element: <OrderConfirmationPage />,
           },
-        ] 
+        ],
       },
     ],
   },
@@ -72,7 +74,6 @@ export const router = createBrowserRouter([
         element: <AdminLayout />,
         children: [
           { index: true, element: <AdminDashboardPage /> },
-          // CRUD Management Table (Admin Only)
           { path: "products", element: <AdminProductsPage /> },
           { path: "reviews", element: <AdminReviewsPage /> },
         ],

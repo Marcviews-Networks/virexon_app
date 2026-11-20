@@ -5,15 +5,27 @@ import {
   getOrderById,
   updateOrderStatus,
 } from "../controllers/orderController.js";
+
 import {
-     protect,
-     adminOnly,
-    } from "../middleware/authMiddleware.js";
+  createCashfreePayment,
+  verifyCashfreePayment,
+} from "../controllers/cashfreeController.js";
+
+import {
+  protect,
+  adminOnly,
+} from "../middleware/authMiddleware.js";
 
 const router = Router();
 
-// Create a new order
+// Create a new COD order
 router.post("/", protect, createOrder);
+
+// Create Cashfree payment
+router.post("/cashfree/create", protect, createCashfreePayment);
+
+// Verify Cashfree payment
+router.post("/cashfree/verify", protect, verifyCashfreePayment);
 
 // Get logged-in user's orders
 router.get("/my", protect, getMyOrders);

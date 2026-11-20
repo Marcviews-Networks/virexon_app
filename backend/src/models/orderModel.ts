@@ -29,6 +29,9 @@ export interface IOrder extends Document {
     | "cancelled";
   paymentStatus: "pending" | "paid" | "failed";
   paymentMethod: "cod" | "online";
+  cashfreeOrderId?: string;
+  cashfreePaymentSessionId?: string;
+  cashfreePaymentId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -40,25 +43,21 @@ const orderItemSchema = new Schema<IOrderItem>(
       ref: "Product",
       required: true,
     },
-
     name: {
       type: String,
       required: true,
       trim: true,
     },
-
     price: {
       type: Number,
       required: true,
       min: 0,
     },
-
     quantity: {
       type: Number,
       required: true,
       min: 1,
     },
-
     image: {
       type: String,
     },
@@ -68,35 +67,11 @@ const orderItemSchema = new Schema<IOrderItem>(
 
 const shippingAddressSchema = new Schema<IShippingAddress>(
   {
-    street: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    city: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    state: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    zipCode: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    country: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+    street: { type: String, required: true, trim: true },
+    city: { type: String, required: true, trim: true },
+    state: { type: String, required: true, trim: true },
+    zipCode: { type: String, required: true, trim: true },
+    country: { type: String, required: true, trim: true },
   },
   { _id: false }
 );
@@ -151,6 +126,21 @@ const orderSchema = new Schema<IOrder>(
       type: String,
       enum: ["cod", "online"],
       default: "cod",
+    },
+
+    cashfreeOrderId: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+
+    cashfreePaymentSessionId: {
+      type: String,
+      select: false,
+    },
+
+    cashfreePaymentId: {
+      type: String,
     },
   },
   {

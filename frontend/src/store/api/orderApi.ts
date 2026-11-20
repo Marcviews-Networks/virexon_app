@@ -23,6 +23,31 @@ export interface CreateOrderRequest {
   paymentMethod: "cod" | "online";
 }
 
+export interface CreateCashfreePaymentRequest {
+  items: OrderItem[];
+  shippingAddress: ShippingAddress;
+  phone: string;
+  couponCode?: string;
+}
+
+export interface CashfreePaymentResponse {
+  success: boolean;
+  message?: string;
+  orderId: string;
+  paymentSessionId: string;
+}
+
+export interface VerifyCashfreePaymentRequest {
+  orderId: string;
+}
+
+export interface VerifyCashfreePaymentResponse {
+  success: boolean;
+  paymentStatus: "pending" | "paid" | "failed";
+  message?: string;
+  order?: Order;
+}
+
 export interface Order {
   _id: string;
   user: string;
@@ -53,6 +78,30 @@ export const orderApi = apiSlice.injectEndpoints({
       invalidatesTags: ["Order"],
     }),
 
+    createCashfreePayment: builder.mutation<
+      CashfreePaymentResponse,
+      CreateCashfreePaymentRequest
+    >({
+      query: (paymentData) => ({
+        url: "/orders/cashfree/create",
+        method: "POST",
+        body: paymentData,
+      }),
+      invalidatesTags: ["Order"],
+    }),
+
+    verifyCashfreePayment: builder.mutation<
+      VerifyCashfreePaymentResponse,
+      VerifyCashfreePaymentRequest
+    >({
+      query: (paymentData) => ({
+        url: "/orders/cashfree/verify",
+        method: "POST",
+        body: paymentData,
+      }),
+      invalidatesTags: ["Order"],
+    }),
+
     getMyOrders: builder.query<
       { success: boolean; orders: Order[] },
       void
@@ -73,6 +122,8 @@ export const orderApi = apiSlice.injectEndpoints({
 
 export const {
   useCreateOrderMutation,
+  useCreateCashfreePaymentMutation,
+  useVerifyCashfreePaymentMutation,
   useGetMyOrdersQuery,
   useGetOrderByIdQuery,
 } = orderApi;

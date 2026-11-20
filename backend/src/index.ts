@@ -15,6 +15,7 @@ import productRoutes from "./routes/productRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
+import { handleCashfreeWebhook } from "./controllers/cashfreeController.js";
 
 const app = express();
 app.set("trust proxy", 1); // <-- ADD THIS LINE HERE FOR LOGIN ISSUE
@@ -49,9 +50,18 @@ app.use(
   })
 );
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
-app.use(express.json());
+app.use(
+  express.json({
+    verify: (req, _res, buf) => {
+      (req as express.Request & { rawBody?: string }).rawBody =
+        buf.toString("utf8");
+    },
+  })
+);
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.post("/api/orders/cashfree/webhook", handleCashfreeWebhook);
 
 // Routes
 app.use("/api/health", healthRoutes);

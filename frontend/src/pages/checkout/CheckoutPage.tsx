@@ -1,27 +1,33 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { load } from "@cashfreepayments/cashfree-js";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { clearCart } from "@/store/cartSlice";
-import { useCreateOrderMutation } from "@/store/api/orderApi";
+import {
+    useCreateOrderMutation,
+    useCreateCashfreePaymentMutation,
+} from "@/store/api/orderApi";
 import { useGetAddressesQuery } from "../../store/api/apiSlice";
 
 export const CheckoutPage = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
-    const { data: addresses = [] } =
-        useGetAddressesQuery();
-
-    console.log("Address recieved:", addresses);
-
+    const { data: addresses = [] } = useGetAddressesQuery();
     const cartItems = useAppSelector((state) => state.cart.items);
 
     const [couponCode, setCouponCode] = useState("");
     const [couponApplied, setCouponApplied] = useState(false);
+    const [phone, setPhone] = useState("");
 
-    const [createOrder, { isLoading }] = useCreateOrderMutation();
+    const [createOrder, { isLoading: isCodLoading }] =
+        useCreateOrderMutation();
 
-    const [paymentMethod, setPaymentMethod] = useState<"cod" | "online">("cod");
+    const [createCashfreePayment, { isLoading: isOnlineLoading }] =
+        useCreateCashfreePaymentMutation();
+
+    const [paymentMethod, setPaymentMethod] =
+        useState<"cod" | "online">("cod");
 
     const [shippingAddress, setShippingAddress] = useState({
         street: "",
@@ -29,8 +35,9 @@ export const CheckoutPage = () => {
         state: "",
         zipCode: "",
         country: "",
-
     });
+
+    const isLoading = isCodLoading || isOnlineLoading;
 
     useEffect(() => {
         if (addresses.length > 0) {
@@ -56,6 +63,7 @@ export const CheckoutPage = () => {
         (total, item) => total + item.product.price * item.quantity,
         0
     );
+
     const discount =
         couponApplied && couponCode.trim().toUpperCase() === "GADGET5"
             ? subtotal * 0.05
@@ -64,7 +72,6 @@ export const CheckoutPage = () => {
     const finalTotal = subtotal - discount;
 
     const handlePlaceOrder = async () => {
-
         if (
             !shippingAddress.street ||
             !shippingAddress.city ||
@@ -76,43 +83,73 @@ export const CheckoutPage = () => {
             return;
         }
 
+        if (cartItems.length === 0) {
+            alert("Your cart is empty.");
+            return;
+        }
+
+        if (paymentMethod === "online" && !/^[6-9]\d{9}$/.test(phone.trim())) {
+            alert("Please enter a valid 10-digit Indian mobile number.");
+            return;
+        }
+
+        const items = cartItems.map((item) => ({
+            product: item.product._id,
+            name: item.product.name,
+            image: item.product.images?.[0] || "",
+            price: item.product.price,
+            quantity: item.quantity,
+        }));
+
         try {
-            const orderData = {
-                items: cartItems.map((item) => ({
-                    product: item.product._id,
-                    name: item.product.name,
-                    image: item.product.images?.[0] || "",
-                    price: item.product.price,
-                    quantity: item.quantity,
-                })),
+            if (paymentMethod === "cod") {
+                const response = await createOrder({
+                    items,
+                    shippingAddress,
+                    totalAmount: Number(finalTotal.toFixed(2)),
+                    paymentMethod: "cod",
+                }).unwrap();
 
+                dispatch(clearCart());
+
+                navigate(
+                    `/dashboard/order-confirmation/${response.order._id}`
+                );
+
+                return;
+            }
+
+            const response = await createCashfreePayment({
+                items,
                 shippingAddress,
+                phone: phone.trim(),
+                couponCode: couponApplied ? couponCode : "",
+            }).unwrap();
 
-                totalAmount: cartItems.reduce(
-                    (total, item) =>
-                        total + item.product.price * item.quantity,
-                    0
-                ),
+            if (!response.paymentSessionId) {
+                throw new Error("Cashfree payment session was not created.");
+            }
 
-                paymentMethod,
-            };
+            const cashfree = await load({
+                mode: "production",
+            });
 
-            const response = await createOrder(orderData).unwrap();
+            if (!cashfree) {
+                throw new Error("Unable to load Cashfree checkout.");
+            }
 
-            console.log("Order created:", response);
-
-            dispatch(clearCart());
-
-
-
-            navigate(`/dashboard/order-confirmation/${response.order._id}`);
+            await cashfree.checkout({
+                paymentSessionId: response.paymentSessionId,
+                redirectTarget: "_self",
+            });
         } catch (error) {
-            console.error("Failed to place order:", error);
-            alert("Failed to place order. Please try again.");
+            console.error("Checkout error:", error);
+            alert(
+                "Unable to proceed with checkout. Please try again."
+            );
         }
     };
 
-    // Prevent checkout with an empty cart
     if (cartItems.length === 0) {
         return (
             <div className="max-w-4xl mx-auto px-4 py-20 text-center">
@@ -145,7 +182,6 @@ export const CheckoutPage = () => {
             </p>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-                {/* Shipping Address */}
                 <div className="lg:col-span-2">
                     <div className="bg-white border border-slate-200 rounded-2xl p-6">
                         <h2 className="text-xl font-bold text-slate-900">
@@ -162,7 +198,8 @@ export const CheckoutPage = () => {
                                     className="w-full border rounded-lg p-3"
                                     onChange={(e) => {
                                         const selectedAddress = addresses.find(
-                                            (address) => address._id === e.target.value
+                                            (address) =>
+                                                address._id === e.target.value
                                         );
 
                                         if (selectedAddress) {
@@ -179,9 +216,15 @@ export const CheckoutPage = () => {
                                     <option value="">Select an address</option>
 
                                     {addresses.map((address) => (
-                                        <option key={address._id} value={address._id}>
-                                            {address.street}, {address.city}, {address.state}
-                                            {address.isDefault ? " (Default)" : ""}
+                                        <option
+                                            key={address._id}
+                                            value={address._id}
+                                        >
+                                            {address.street}, {address.city},{" "}
+                                            {address.state}
+                                            {address.isDefault
+                                                ? " (Default)"
+                                                : ""}
                                         </option>
                                     ))}
                                 </select>
@@ -196,8 +239,14 @@ export const CheckoutPage = () => {
                             />
 
                             <input
-                                type="text"
-                                placeholder="Phone Number"
+                                type="tel"
+                                placeholder="10-digit Phone Number"
+                                value={phone}
+                                onChange={(e) =>
+                                    setPhone(
+                                        e.target.value.replace(/\D/g, "").slice(0, 10)
+                                    )
+                                }
                                 className="px-4 py-3 border border-slate-300 rounded-lg"
                             />
 
@@ -268,7 +317,6 @@ export const CheckoutPage = () => {
                         </div>
                     </div>
 
-                    {/* Payment */}
                     <div className="bg-white border border-slate-200 rounded-2xl p-6 mt-6">
                         <h2 className="text-xl font-bold text-slate-900">
                             Payment Method
@@ -279,10 +327,10 @@ export const CheckoutPage = () => {
                                 <input
                                     type="radio"
                                     name="payment"
-                                    value="cod"
                                     checked={paymentMethod === "cod"}
                                     onChange={() => setPaymentMethod("cod")}
                                 />
+
                                 <span className="font-semibold text-slate-700">
                                     Cash on Delivery
                                 </span>
@@ -292,32 +340,18 @@ export const CheckoutPage = () => {
                                 <input
                                     type="radio"
                                     name="payment"
-                                    value="online"
                                     checked={paymentMethod === "online"}
                                     onChange={() => setPaymentMethod("online")}
                                 />
-                                <span className="font-semibold text-slate-700">
-                                    Credit / Debit Card
-                                </span>
-                            </label>
 
-                            <label className="flex items-center gap-3 border border-slate-200 rounded-xl p-4 cursor-pointer">
-                                <input
-                                    type="radio"
-                                    name="payment"
-                                    value="online"
-                                    checked={paymentMethod === "online"}
-                                    onChange={() => setPaymentMethod("online")}
-                                />
                                 <span className="font-semibold text-slate-700">
-                                    UPI
+                                    Online Payment via Cashfree (UPI, Cards, Net Banking)
                                 </span>
                             </label>
                         </div>
                     </div>
                 </div>
 
-                {/* Order Summary */}
                 <div className="bg-white border border-slate-200 rounded-2xl p-6 h-fit">
                     <h2 className="text-xl font-bold text-slate-900">
                         Order Summary
@@ -360,12 +394,15 @@ export const CheckoutPage = () => {
                             <button
                                 type="button"
                                 onClick={() => {
-                                    if (couponCode.trim().toUpperCase() === "GADGET5") {
-                                        setCouponCode("Gadget5");
+                                    if (
+                                        couponCode.trim().toUpperCase() ===
+                                        "GADGET5"
+                                    ) {
+                                        setCouponCode("GADGET5");
                                         setCouponApplied(true);
                                     } else {
                                         setCouponApplied(false);
-                                        alert("Invalid coupon code. Please enter Gadget5.");
+                                        alert("Invalid coupon code.");
                                     }
                                 }}
                                 className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
@@ -383,11 +420,14 @@ export const CheckoutPage = () => {
                         {couponApplied && (
                             <div className="mt-3 flex justify-between text-sm text-green-700">
                                 <span>Discount (5%)</span>
-                                <span>-₹{discount.toLocaleString("en-IN")}</span>
+                                <span>
+                                    -₹{discount.toLocaleString("en-IN")}
+                                </span>
                             </div>
                         )}
                     </div>
-                    <div className="flex justify-between font-bold text-lg text-slate-900">
+
+                    <div className="flex justify-between font-bold text-lg text-slate-900 mt-5">
                         <span>Total</span>
                         <span>₹{finalTotal.toLocaleString("en-IN")}</span>
                     </div>
@@ -397,7 +437,11 @@ export const CheckoutPage = () => {
                         disabled={isLoading}
                         className="w-full mt-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl disabled:opacity-50"
                     >
-                        {isLoading ? "Placing Order..." : "Place Order"}
+                        {isLoading
+                            ? "Processing..."
+                            : paymentMethod === "online"
+                              ? "Pay Now"
+                              : "Place Order"}
                     </button>
 
                     <button
