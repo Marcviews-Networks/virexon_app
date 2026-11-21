@@ -27,6 +27,7 @@ export const AdminLayout = () => {
   const navLinks = [
     { label: "Dashboard Overview", path: "/admin" },
     { label: "Manage Products", path: "/admin/products" },
+    { label: "Manage Orders", path: "/admin/orders" },
     { label: "Manage Reviews", path: "/admin/reviews" },
   ];
 

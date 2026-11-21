@@ -8,6 +8,7 @@ import { AdminLayout } from "@/pages/admin/AdminLayout";
 import { AdminDashboardPage } from "@/pages/admin/AdminDashboardPage";
 import { AdminProductsPage } from "@/pages/admin/AdminProductsPage";
 import { AdminReviewsPage } from "@/pages/admin/AdminReviewsPage";
+import { AdminOrdersPage } from "@/pages/admin/AdminOrdersPage";
 
 // Client Dashboard Imports
 import { ClientLayout } from "@/pages/client/ClientLayout";
@@ -75,6 +76,7 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <AdminDashboardPage /> },
           { path: "products", element: <AdminProductsPage /> },
+          { path: "orders", element: <AdminOrdersPage /> },
           { path: "reviews", element: <AdminReviewsPage /> },
         ],
       },

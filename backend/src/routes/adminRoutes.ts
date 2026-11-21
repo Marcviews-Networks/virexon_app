@@ -6,17 +6,23 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
+  getAdminOrders,
+  updateAdminOrderStatus,
 } from "../controllers/adminController.js";
 
 const router = Router();
 
-// Apply auth protection globally to all admin routes
 router.use(protect, adminOnly);
 
 router.get("/analytics", getAdminAnalytics);
+
 router.get("/products", getAdminProducts);
 router.post("/products", createProduct);
 router.put("/products/:id", updateProduct);
 router.delete("/products/:id", deleteProduct);
+
+// Order management
+router.get("/orders", getAdminOrders);
+router.put("/orders/:id/status", updateAdminOrderStatus);
 
 export default router;
